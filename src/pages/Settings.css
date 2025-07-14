@@ -1,0 +1,127 @@
+/* src/pages/Settings.css */
+
+/* Base Page Styles */
+.settings-page {
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  padding: 2rem;
+  /* Transition can remain, but it won't be used for theme switching */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--primary-bg-color); /* Will now consistently be light theme color */
+  color: var(--text-color); /* Will now consistently be light theme color */
+}
+
+.settings-page h1,
+.settings-page h2 {
+  color: var(--text-color); /* Will now consistently be light theme color */
+}
+
+/* Header */
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* Main Content Grid */
+.settings-main {
+  display: grid;
+  gap: 1.5rem;
+  /* You might want to define grid columns for larger screens here */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Card Styles */
+.settings-card {
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow); /* Uses global light theme card shadow */
+  /* Transition can remain, but it won't be used for theme switching */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--secondary-bg-color); /* Will now consistently be light theme color */
+}
+
+/* Removed: Theme-specific card background blocks (body.theme-light, body.theme-dark)
+   The 'settings-card' now directly uses '--secondary-bg-color' which is defined
+   in :root (index.css) as the light theme color.
+*/
+
+/* Label Styles */
+.settings-label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: var(--text-color); /* Will now consistently be light theme color */
+}
+
+/* Input Styles */
+.settings-input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color); /* Will now consistently be light theme color */
+  color: var(--text-color); /* Will now consistently be light theme color */
+  /* Transition can remain, but it won't be used for theme switching */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  background-color: var(--input-bg-color); /* Will now consistently be light theme color */
+}
+
+/* Removed: Theme-specific input background blocks (body.theme-light, body.theme-dark)
+   The 'settings-input' now directly uses '--input-bg-color' which is defined
+   in :root (index.css) as the light theme color.
+*/
+
+/* Checkbox Styles */
+.settings-checkbox {
+  margin-right: 0.5rem;
+  /* You might want to style the actual checkbox appearance here as well */
+}
+
+/* Button Styles (common) */
+.settings-button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  border: 1px solid var(--button-border-color); /* Uses global light theme button border */
+  background-color: var(--button-bg-color); /* Uses global light theme button background */
+  color: var(--button-text-color); /* Uses global light theme button text color */
+}
+
+.settings-button:hover {
+  background-color: var(--button-hover-bg-color); /* Uses global light theme button hover background */
+}
+
+/* Confirm Delete Button Specific Styles */
+.settings-confirm-button {
+  background-color: #e53935; /* Specific red for delete */
+  color: white; /* White text for delete button */
+  border-color: #e53935; /* Specific border color for delete */
+}
+
+.settings-confirm-button:hover {
+  background-color: #c62828; /* Darker red on hover */
+}
+
+/* Opacity for confirm delete state */
+.settings-confirm-button:not(.confirm-active) {
+  opacity: 0.7;
+}
+
+.settings-confirm-button.confirm-active {
+  opacity: 1;
+}
+
+
+/* Profile Picture Styles */
+.profile-pic-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-top: 1rem;
+  border-radius: 50%;
+  border: 2px solid var(--border-color); /* Uses global light theme border color */
+}

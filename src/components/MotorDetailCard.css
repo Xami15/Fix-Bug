@@ -1,0 +1,156 @@
+/* src/components/MotorDetailCard.css */
+
+.motor-detail-card {
+    background-color: var(--primary-bg-color); /* Darker background for card content */
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 10px var(--box-shadow-color); /* Visible shadow */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute content vertically */
+    align-items: flex-start; /* Align content to the start (left) */
+    transition: all 0.3s ease-in-out;
+    width: 100%; /* Take full width of the grid cell */
+    min-height: 180px; /* Ensure a decent height for content */
+    box-sizing: border-box; /* Ensures padding and border are included in width/height */
+    text-align: left;
+    overflow: hidden; /* Hide any content that overflows */
+}
+
+.motor-detail-card:hover {
+    transform: translateY(-5px); /* Lift on hover */
+    box-shadow: 0 8px 20px var(--box-shadow-color); /* Stronger shadow on hover */
+}
+
+/* Status-based left border - provides a prominent status indicator */
+.motor-detail-card.status-normal { border-left: 6px solid var(--status-normal); }
+.motor-detail-card.status-warning { border-left: 6px solid var(--status-warning); }
+.motor-detail-card.status-fault { border-left: 6px solid var(--status-fault); }
+.motor-detail-card.status-disconnected { border-left: 6px solid var(--status-disconnected); }
+
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Align items centrally in the header */
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px dashed var(--border-color);
+    width: 100%; /* Ensure header takes full width */
+}
+
+.motor-name {
+    margin: 0;
+    font-size: 1.2rem; /* Larger motor name */
+    color: var(--text-color);
+    font-weight: bold;
+    white-space: nowrap; /* Prevent motor name from wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis for overflow */
+    flex-grow: 1; /* Allow name to take available space */
+    min-width: 0; /* Important for flex items with overflow:hidden */
+    padding-right: 0.5rem; /* Space before delete button */
+}
+
+.delete-motor-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.4rem; /* Larger delete icon */
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s, color 0.2s;
+    flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.delete-motor-btn:hover {
+    opacity: 1;
+    color: var(--status-fault);
+}
+
+.card-body {
+    flex-grow: 1; /* Allow body to take available space */
+    width: 100%;
+}
+
+.card-body p {
+    margin: 0.4rem 0;
+    font-size: 0.95rem; /* Readable font size */
+    color: var(--text-color);
+}
+
+.card-body p strong {
+    color: var(--button-bg-color); /* Accent color for labels */
+    margin-right: 5px;
+}
+
+.motor-status {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1rem; /* Prominent status text */
+    margin-top: 0.8rem; /* More space from previous content */
+    color: var(--text-color);
+}
+
+/* Status Dot for the card - prominent and clear */
+.status-dot {
+    width: 15px; /* Larger dot */
+    height: 15px; /* Larger dot */
+    border-radius: 50%;
+    margin-right: 10px; /* More spacing */
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.4); /* Clearer border for the dot */
+}
+
+/* Specific colors for the dots (relying on global CSS variables) */
+.status-dot.normal { background-color: var(--status-normal); }
+.status-dot.warning { background-color: var(--status-warning); }
+.status-dot.fault { background-color: var(--status-fault); }
+.status-dot.disconnected { background-color: var(--status-disconnected); }
+
+
+.last-updated {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-top: 1rem;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 0.5rem;
+    text-align: right; /* Align date to the right */
+    width: 100%;
+}
+
+/* --- Media Queries for Responsiveness --- */
+@media (max-width: 768px) {
+    .motor-detail-card {
+        padding: 0.8rem;
+    }
+    .motor-name {
+        font-size: 1rem;
+    }
+    .card-body p, .motor-status {
+        font-size: 0.85rem;
+    }
+    .status-dot {
+        width: 12px;
+        height: 12px;
+        margin-right: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .motor-detail-card {
+        padding: 0.7rem;
+    }
+    .motor-name {
+        font-size: 0.95rem;
+    }
+    .card-body p, .motor-status {
+        font-size: 0.8rem;
+    }
+    .delete-motor-btn {
+        font-size: 1.2rem;
+    }
+}

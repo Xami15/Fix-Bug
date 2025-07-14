@@ -1,0 +1,127 @@
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background-color: #020357; /* Dark background */
+  color: white;
+  padding: 1rem;
+  transition: width 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: visible; /* Changed from hidden to visible for tooltips */
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.sidebar.collapsed {
+  width: 80px;
+  overflow: visible; /* Allow tooltips to overflow outside sidebar */
+}
+
+.sidebar .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar .title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.sidebar .toggle-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+  flex-grow: 1;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative; /* Needed for tooltip positioning */
+  overflow: visible;  /* Ensure tooltip is not clipped */
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+  border-radius: 6px;
+}
+
+.nav-link:hover {
+  background-color: #360d96; /* Slightly lighter on hover */
+}
+
+/* Selected item */
+.nav-link.active {
+  background-color: #4012be; /* Blue background for active item */
+  font-weight: 600;
+}
+
+/* Hover on active item */
+.nav-link.active:hover {
+  background-color: #1a10ac; /* Darker blue when active and hovered */
+}
+
+/* Collapsed mode: center icon, hide text */
+.sidebar.collapsed .nav-link {
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+/* Tooltips for collapsed sidebar */
+.tooltip {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #1302ac;
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  display: none;
+  z-index: 9999; /* Increase z-index to stay on top */
+  pointer-events: none;
+}
+
+.sidebar.collapsed li .nav-link:hover .tooltip {
+  display: block;
+}
+.sidebar .title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  white-space: nowrap;
+  color: white;
+  transition: color 0.5s ease, font-size 0.5s ease;
+  cursor: default;
+}
+
+.sidebar .title:hover {
+  color: #b2a5fc; /* blue */
+  font-size: 1.6rem; /* bigger */
+  cursor: pointer;
+}

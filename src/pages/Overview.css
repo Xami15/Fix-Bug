@@ -1,0 +1,156 @@
+/* src/pages/Overview.css */
+
+/* Main container */
+.overview-container {
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  /* Transition can remain, but it won't be used for theme switching */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--primary-bg-color); /* Will now consistently be light theme color */
+  color: var(--text-color); /* Will now consistently be light theme color */
+}
+
+.overview-container h1,
+.overview-container h2,
+.overview-container h3 {
+  color: var(--text-color); /* Will now consistently be light theme color */
+  margin-bottom: 16px;
+}
+
+/* Summary Cards Section */
+.summary-cards-section {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+/* Individual Card */
+.overview-card {
+  flex: 1 1 160px;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  /* Transition can remain, but it won't be used for theme switching */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+  /* Hardcoded light theme styles for the card */
+  background-color: var(--secondary-bg-color); /* Light background for cards */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Light theme shadow */
+}
+
+/* Removed: Theme-specific card blocks (body.theme-light, body.theme-dark)
+   The 'overview-card' now directly has its light theme styles applied above.
+*/
+
+/* Title & Value */
+.overview-card-title {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: var(--text-color); /* Will now consistently be light theme color */
+}
+
+.overview-card-value {
+  font-size: 28px;
+}
+
+/* Combined Card for Averages */
+.combined-card {
+  flex: 1 1 320px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 30px;
+  padding: 20px;
+  border-radius: 8px;
+  /* These styles should match the .overview-card styles for consistency */
+  background-color: var(--secondary-bg-color); /* Light background for cards */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Light theme shadow */
+}
+
+.combined-card-item {
+  text-align: center;
+}
+
+.combined-card-separator {
+  width: 1px;
+  height: 50px;
+  background-color: #ccc; /* Hardcoded light theme separator color */
+  transition: background-color 0.3s ease;
+}
+
+/* Removed: body.theme-dark .combined-card-separator block */
+
+/* Charts Section */
+.charts-section {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 30px;
+}
+
+.chart-container {
+  flex: 1 1 300px;
+  max-width: 600px;
+  padding: 16px;
+  background-color: var(--secondary-bg-color); /* Uses global light theme secondary background */
+  border-radius: 8px;
+  box-shadow: var(--card-shadow); /* Uses global light theme card shadow */
+}
+
+/* Pie chart container smaller */
+.chart-container:first-child {
+  max-width: 400px;
+}
+
+/* Alerts Table */
+.alerts-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  transition: box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Hardcoded light theme shadow */
+}
+
+/* Removed: body.theme-light .alerts-table and body.theme-dark .alerts-table */
+
+.alerts-table-header {
+  background-color: var(--secondary-bg-color); /* Uses global light theme secondary background */
+  transition: background-color 0.3s ease;
+}
+
+.alerts-table-header th {
+  padding: 10px 15px;
+  text-align: left;
+  color: var(--text-color); /* Uses global light theme text color */
+}
+
+/* Table Body Rows */
+.alert-row {
+  border-bottom: 1px solid;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  border-color: #ddd; /* Hardcoded light theme border color */
+}
+
+/* Removed: body.theme-light .alert-row and body.theme-dark .alert-row */
+
+.alert-row td {
+  padding: 8px 15px;
+}
+
+/* Status Row Colors (These are fine as they are specific colors, not theme-dependent variables) */
+.alert-row--fault {
+  color: #dc3545;
+  font-weight: 600;
+}
+.alert-row--warning {
+  color: #ffc107;
+  font-weight: 600;
+}
+.alert-row--healthy {
+  color: var(--text-color); /* Uses global light theme text color */
+}

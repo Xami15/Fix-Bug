@@ -1,0 +1,159 @@
+/* src/pages/Prediction.css */
+
+/* Main container styles */
+.prediction-container {
+  padding: 20px;
+  background-color: var(--primary-bg-color); /* Uses global light theme primary background */
+  color: var(--text-color); /* Uses global light theme text color */
+  min-height: calc(100vh - 60px);
+  /* Transition can remain, but it won't be used for theme switching */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Header styles */
+.prediction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Connection status badge */
+.connection-status-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: white;
+  background-color: #28a745; /* default connected */
+}
+
+.connection-status-badge.connected {
+  background-color: #28a745;
+}
+.connection-status-badge.disconnected {
+  background-color: #dc3545;
+}
+
+/* Prediction summary */
+.prediction-summary {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  flex-wrap: wrap;
+}
+
+.status-count-text {
+  color: inherit;
+}
+
+.healthy-text {
+  color: #28a745;
+}
+.warning-text {
+  color: #ffc107;
+}
+.fault-text {
+  color: #dc3545;
+}
+
+/* Grid of prediction cards */
+.prediction-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.no-predictions-text {
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+  font-size: 1rem;
+  padding: 2rem;
+}
+
+/* Prediction card base */
+.prediction-card {
+  padding: 20px;
+  border-radius: 10px;
+  /* Hardcoded light theme box-shadow and background-color */
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 10px; /* Use light theme shadow directly */
+  background-color: var(--secondary-bg-color); /* Uses global light theme secondary background */
+  color: var(--text-color); /* Uses global light theme text color */
+  transition: all 0.3s ease;
+}
+
+/* Removed: Theme-specific prediction card background/shadow */
+/* The styles for .prediction-card--healthy, .prediction-card--warning, .prediction-card--fault
+   that were in body.theme-light and body.theme-dark are now removed.
+   The base .prediction-card and inline styles in JSX handle colors. */
+
+/* Card headings */
+.prediction-card h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Paragraph text */
+.prediction-card p {
+  margin: 5px 0;
+  color: var(--secondary-text-color); /* Uses global light theme secondary text color */
+}
+
+/* Last checked time */
+.last-checked-info {
+  font-size: 0.85rem;
+  color: var(--secondary-text-color); /* Uses global light theme secondary text color */
+  margin-top: 10px;
+}
+
+/* Status badge inside card */
+.status-badge {
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  /* Hardcoded light theme background for status badge */
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Removed: body.theme-light .status-badge and body.theme-dark .status-badge */
+
+/* Motor connection status inside card title */
+.motor-connection-status {
+  font-size: 0.75rem;
+  margin-left: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: white; /* Fixed white text */
+  font-weight: normal;
+}
+
+.motor-connection-status.connected {
+  background-color: #28a745;
+}
+.motor-connection-status.disconnected {
+  background-color: #dc3545;
+}
+
+/* Delete button */
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
