@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginWithEmail, loginWithGoogle } from "../authService";
+import { supabase } from "../utils/supabase";
+import { getAuth } from "firebase/auth";
 
 export default function Login({ onLogin, isActive }) {
   const [email, setEmail] = useState("");
@@ -9,10 +11,37 @@ export default function Login({ onLogin, isActive }) {
   const [gLoading, setGLoading] = useState(false);
   const navigate = useNavigate();
 
+  // 🔄 Insert user into Supabase if not already there
+  const storeUserIfNew = async (user) => {
+    const { data, error } = await supabase
+      .from("users")
+      .select("id")
+      .eq("id", user.uid)
+      .maybeSingle();
+
+    if (!data && !error) {
+      // User not found — insert
+      const { error: insertError } = await supabase.from("users").insert([
+        {
+          id: user.uid,
+          email: user.email,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+      if (insertError) {
+        console.error("Error inserting user into Supabase:", insertError.message);
+      }
+    }
+  };
+
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
       await loginWithEmail(email, pass);
+      const user = getAuth().currentUser;
+
+      if (user) await storeUserIfNew(user);
+
       localStorage.setItem("token", "loggedin");
       if (onLogin) onLogin();
       navigate("/dashboard", { replace: true });
@@ -26,6 +55,10 @@ export default function Login({ onLogin, isActive }) {
     setGLoading(true);
     try {
       await loginWithGoogle();
+      const user = getAuth().currentUser;
+
+      if (user) await storeUserIfNew(user);
+
       localStorage.setItem("token", "loggedin");
       if (onLogin) onLogin();
       navigate("/dashboard", { replace: true });

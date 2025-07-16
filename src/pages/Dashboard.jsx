@@ -1,42 +1,38 @@
 import React, { useState, useEffect } from 'react';
+import { getAuth } from 'firebase/auth';
 import { useMotors } from '../context/MotorsContext';
 import MotorDetailCard from '../components/MotorDetailCard';
 import './Dashboard.css';
 import { supabase } from '../utils/supabase';
+import { auth } from '../firebaseConfig';
 
 export default function Dashboard() {
   const { motors, addMotor, removeMotor } = useMotors();
-  const [newMotorName, setNewMotorName] = useState('');
   const [newMotorLocation, setNewMotorLocation] = useState('');
   const [newMotorIdInput, setNewMotorIdInput] = useState('');
   const [showAddMotorForm, setShowAddMotorForm] = useState(false);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(null); // Firebase UID
 
-  // ✅ Get current user ID on mount
+  // ✅ Get Firebase user on mount
   useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
 
-      if (error) {
-        console.error("Error fetching current user:", error);
-      } else {
-        setUserId(user.id);
-        fetchMotors(user.id);
-      }
-    };
-
-    fetchUser();
+    if (currentUser) {
+      const uid = currentUser.email;
+      setUserId(uid);
+      fetchMotors(uid);
+    } else {
+      console.warn("No authenticated Firebase user found.");
+    }
   }, []);
 
-  // ✅ Fetch only motors belonging to current user
-  const fetchMotors = async (user_id) => {
+  // ✅ Fetch only motors belonging to current Firebase user
+  const fetchMotors = async (uid) => {
     const { data, error } = await supabase
       .from('motors')
       .select('*')
-      .eq('user_id', user_id); // Only fetch motors for this user
+      .eq('user_id', uid);
 
     if (error) {
       console.error('Error fetching motors from Supabase:', error);
@@ -51,10 +47,9 @@ export default function Dashboard() {
     e.preventDefault();
 
     const motorId = newMotorIdInput.trim();
-    const companyName = newMotorName.trim();
     const location = newMotorLocation.trim();
 
-    if (!motorId || !companyName || !location || !userId) return;
+    if (!motorId || !location || !userId) return;
 
     if (motors.some((motor) => motor.id === motorId)) {
       console.warn(`Motor with ID "${motorId}" already exists.`);
@@ -64,9 +59,9 @@ export default function Dashboard() {
     const { error } = await supabase.from('motors').insert([
       {
         motor_id: motorId,
-        company_id: companyName,
+        company_id: auth.currentUser.email, // Firebase UID as company_id
         location: location,
-        user_id: userId, // ✅ Attach current user ID
+      
       },
     ]);
 
@@ -75,9 +70,8 @@ export default function Dashboard() {
       return;
     }
 
-    addMotor(motorId, companyName, location);
+    addMotor(motorId, userId, location);
     setNewMotorIdInput('');
-    setNewMotorName('');
     setNewMotorLocation('');
     setShowAddMotorForm(false);
   };
@@ -116,21 +110,17 @@ export default function Dashboard() {
             />
             <input
               type="text"
-              placeholder="Motor Name (e.g., Main Fan Motor)"
-              value={newMotorName}
-              onChange={(e) => setNewMotorName(e.target.value)}
-              className="dashboard-input"
-              required
-            />
-            <input
-              type="text"
               placeholder="Location (e.g., Assembly Line A)"
               value={newMotorLocation}
               onChange={(e) => setNewMotorLocation(e.target.value)}
               className="dashboard-input"
               required
             />
-            <button type="submit" className="dashboard-submit-button">
+            <button
+              type="submit"
+              className="dashboard-submit-button"
+              disabled={!userId}
+            >
               Add Motor
             </button>
           </form>

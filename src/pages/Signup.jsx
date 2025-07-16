@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signupWithEmail } from "../authService";
 import { updateProfile } from "firebase/auth";
-import { createUser } from "../services/supabaseService";
+import { supabase } from "../utils/supabase"; // your existing Supabase instance
 
 export default function Signup({ onLogin, isActive }) {
   const [hoveredIcon, setHoveredIcon] = useState(null);
@@ -28,14 +28,25 @@ export default function Signup({ onLogin, isActive }) {
     e.preventDefault();
     try {
       const cred = await signupWithEmail(email, pass);
-      await updateProfile(cred, { displayName: name });
+      await updateProfile(cred.user, { displayName: name });
 
-      // Save user data to Supabase using the service
-      await createUser({
-        name: name,
-        email: email,
-        password: pass, // Note: In production, use hashed password
-      });
+      const user = cred.user;
+
+      // 🟢 Insert user data into Supabase
+      const { error } = await supabase.from("users").insert([
+        {
+          id: user.uid, // Firebase UID as primary key
+          name: name,
+          email: user.email,
+          created_at: new Date().toISOString(), // current timestamp
+        },
+      ]);
+
+      if (error) {
+        console.error("Error inserting user into Supabase:", error.message);
+        alert("There was an issue saving your data.");
+        return;
+      }
 
       localStorage.setItem("token", "loggedin");
       if (onLogin) onLogin();
@@ -131,7 +142,7 @@ export default function Signup({ onLogin, isActive }) {
   );
 }
 
-/* ---------- styles (unchanged) ---------- */
+/* ---------- styles ---------- */
 const formStyle = {
   background: "#fff",
   display: "flex",
