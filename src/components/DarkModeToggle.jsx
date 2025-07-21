@@ -1,6 +1,7 @@
 // src/components/DarkModeToggle.jsx
 import React, { useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 const DarkModeToggle = () => {
   const { darkMode, toggleDarkMode } = useContext(ThemeContext);
@@ -16,10 +17,14 @@ const DarkModeToggle = () => {
         backgroundColor: darkMode ? "#eee" : "#222",
         color: darkMode ? "#222" : "#eee",
         fontWeight: "600",
-        fontSize: 14,
+        fontSize: 20,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
+      aria-label="Toggle dark mode"
     >
-      {darkMode ? "Light Mode" : "Dark Mode"}
+      {darkMode ? <FaSun /> : <FaMoon />}
     </button>
   );
 };

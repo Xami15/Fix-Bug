@@ -175,18 +175,18 @@ export const MotorsProvider = ({ children }) => {
   }, [motors]);
 
   // Add/remove motor logic
-  const addMotor = useCallback((newMotorId, newMotorName, newMotorLocation) => {
+  const addMotor = useCallback((motorId, motorName, motorLocation) => {
     setMotors(prev => {
-      if (prev.some(m => m.name === newMotorName || m.id === newMotorId)) {
-        console.warn(`Motor already exists: ${newMotorId}`);
+      if (prev.some(m => m.id === motorId)) {
+        console.warn(`Motor already exists: ${motorId}`);
         return prev;
       }
       return [
         ...prev,
         {
-          id: newMotorId,
-          name: newMotorName,
-          location: newMotorLocation,
+          id: motorId,
+          name: motorName,
+          location: motorLocation,
           temperature: null,
           vibration: null,
           status: 'Disconnected',

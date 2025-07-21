@@ -2,6 +2,7 @@
 import React, { useState, useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 import DarkModeToggle from './DarkModeToggle';
+import ProfileMenu from './ProfileMenu'; // <-- Import the new ProfileMenu component
 import '../layouts/MainLayout.css';
 
 const Topbar = ({ sidebarCollapsed }) => {
@@ -53,20 +54,7 @@ const Topbar = ({ sidebarCollapsed }) => {
       {/* Toggle & Profile */}
       <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
         <DarkModeToggle />
-        <button
-          style={{
-            padding: "0.5rem 1rem",
-            borderRadius: "6px",
-            border: "none",
-            backgroundColor: darkMode ? "#374151" : "#f3f4f6",
-            color: darkMode ? "#e5e7eb" : "#111827",
-            cursor: "pointer",
-            transition: "background-color 0.2s ease",
-          }}
-          onClick={() => alert("Profile clicked")}
-        >
-          📱
-        </button>
+        <ProfileMenu darkMode={darkMode} />
       </div>
     </header>
   );
