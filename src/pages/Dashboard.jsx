@@ -12,6 +12,8 @@ export default function Dashboard() {
   const [newMotorIdInput, setNewMotorIdInput] = useState('');
   const [showAddMotorForm, setShowAddMotorForm] = useState(false);
   const [userId, setUserId] = useState(null); // Firebase UID
+  const [companyName, setCompanyName] = useState(() => localStorage.getItem("companyName") || "");
+  const [showCompanyPrompt, setShowCompanyPrompt] = useState(false);
 
   // ✅ Get Firebase user on mount
   useEffect(() => {
@@ -29,10 +31,11 @@ export default function Dashboard() {
 
   // ✅ Fetch only motors belonging to current Firebase user
   const fetchMotors = async (uid) => {
+    console.log(`Fetching motors for user: ${uid}`);
     const { data, error } = await supabase
       .from('motors')
       .select('*')
-      .eq('user_id', uid);
+      .eq('company_id', uid);
 
     if (error) {
       console.error('Error fetching motors from Supabase:', error);
@@ -43,8 +46,14 @@ export default function Dashboard() {
     }
   };
 
+  // Check if company name is needed before adding a motor
   const handleAddMotor = async (e) => {
     e.preventDefault();
+
+    if (!companyName) {
+      setShowCompanyPrompt(true);
+      return;
+    }
 
     const motorId = newMotorIdInput.trim();
     const location = newMotorLocation.trim();
@@ -56,12 +65,15 @@ export default function Dashboard() {
       return;
     }
 
+    const installedAt = new Date().toISOString(); // Add current date
+
     const { error } = await supabase.from('motors').insert([
       {
         motor_id: motorId,
         company_id: auth.currentUser.email, // Firebase UID as company_id
         location: location,
-      
+        installed_at: installedAt, // Set installed_at to current date
+        company_name: companyName, // Store company name
       },
     ]);
 
@@ -74,6 +86,15 @@ export default function Dashboard() {
     setNewMotorIdInput('');
     setNewMotorLocation('');
     setShowAddMotorForm(false);
+  };
+
+  // Handle company name submission
+  const handleCompanySubmit = (e) => {
+    e.preventDefault();
+    if (companyName.trim()) {
+      localStorage.setItem("companyName", companyName.trim());
+      setShowCompanyPrompt(false);
+    }
   };
 
   const motorsForDisplay = motors.map((motor) => ({
@@ -97,6 +118,45 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
+
+        {/* Company Name Prompt Modal */}
+        {showCompanyPrompt && (
+          <div className="company-modal-overlay">
+            <div className="company-modal">
+              <h2>Enter Your Company Name</h2>
+              <form onSubmit={handleCompanySubmit}>
+                <input
+                  type="text"
+                  placeholder="Company Name"
+                  value={companyName}
+                  onChange={e => setCompanyName(e.target.value)}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    borderRadius: "8px",
+                    border: "1px solid #ccc",
+                    marginBottom: "1rem"
+                  }}
+                />
+                <button
+                  type="submit"
+                  style={{
+                    padding: "0.75rem 1.5rem",
+                    borderRadius: "8px",
+                    background: "#2563eb",
+                    color: "#fff",
+                    border: "none",
+                    fontWeight: "bold",
+                    cursor: "pointer"
+                  }}
+                >
+                  Save & Continue
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
 
         {showAddMotorForm && (
           <form className="add-motor-form" onSubmit={handleAddMotor}>
