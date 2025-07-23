@@ -11,6 +11,7 @@ import LoginSignup from "../pages/LoginSignup";
 import ForgetPassword from "../pages/ForgetPassword";
 import ResetPassword from "../pages/ResetPassword"; // Make sure this import is correct
 import ProtectedRoute from "../auth/ProtectedRoute";
+import AuthPage from "../auth/authPage"; // Import the AuthPage component
 // Removed: import { ThemeProvider } from '../context/ThemeContext';
 
 export default function AppRoutes() {
@@ -20,7 +21,7 @@ export default function AppRoutes() {
       <Route path="/" element={<Navigate to="/login" replace />} />
 
       {/* Public routes */}
-      <Route path="/login" element={<LoginSignup />} />
+      <Route path="/login" element={<AuthPage />} />
       <Route path="/signup" element={<Navigate to="/login" replace />} />
       <Route path="/forgot-password" element={<ForgetPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
