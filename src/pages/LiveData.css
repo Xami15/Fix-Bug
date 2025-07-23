@@ -1,0 +1,96 @@
+/* Main container for LiveData page */
+.live-data-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border-radius: 16px;
+  background-color: var(--primary-bg-color); /* Uses global light theme secondary background */
+  color: var(--text-color); /* Uses global light theme text color */
+  /* Hardcode box-shadow for light theme */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease; /* Transition can remain, but won't be for theme switching */
+}
+
+/* Removed: Define box-shadow color based on theme (body.theme-light and body.theme-dark blocks are gone) */
+/* --box-shadow-color is now directly set above */
+
+
+/* H1 title */
+.live-data-container h1 {
+  color: var(--text-color); /* Uses global light theme text color */
+  text-align: center;
+  font-size: 1.9rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+/* Dropdown to select motors */
+.live-data-select {
+  width: 100%;
+  padding: 0.7rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  outline: none;
+  background-color: var(--secondary-bg-color); /* Uses global light theme primary background */
+  color: var(--text-color); /* Uses global light theme text color */
+  border: 1px solid var(--border-color); /* Uses global light theme border color */
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Card displaying live data values */
+.live-data-card {
+  flex: 1 1 250px;
+  max-width: 300px;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  /* Hardcode box-shadow for light theme */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--primary-bg-color); /* Uses global light theme primary background */
+  color: var(--text-color); /* Uses global light theme text color */
+  transition: background-color 0.3s, color 0.3s;
+  border: 1px solid var(--border-color); /* Uses global light theme border color */
+}
+
+/* Removed: Theme-specific live-data-card blocks (body.theme-light and body.theme-dark)
+   The 'live-data-card' now directly has its light theme styles applied above.
+*/
+
+
+/* Motor name in data card */
+.live-data-card h2 {
+  color: rgb(90, 82, 252); /* Fixed primary color for emphasis */
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+/* Temperature and Vibration values */
+.live-data-card p {
+  font-size: 1.1rem;
+}
+.live-data-card p span {
+  font-weight: 600;
+}
+.live-data-card p span.temp {
+  color: #ef4444; /* Red for temperature */
+}
+.live-data-card p span.vib {
+  color: #3b82f6; /* Blue for vibration */
+}
+
+/* Chart wrapper */
+.live-data-chart-wrapper {
+  height: 360px;
+  padding-top: 1rem;
+}
+
+/* Empty or waiting state */
+.live-data-empty,
+.live-data-loading {
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 2rem 0;
+  color: var(--text-color); /* Uses global light theme text color */
+  opacity: 0.75;
+}

@@ -1,0 +1,25 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['name', 'email', 'password', 'createdAt'])"
+      }
+    },
+    "motors": {
+      "$motorId": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('users').child(newData.child('companyId').val()).exists()",
+        ".validate": "newData.hasChildren(['companyId', 'name', 'location', 'installedAt'])"
+      }
+    },
+    "sensorData": {
+      "$dataId": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('motors').child(newData.child('motorId').val()).exists()",
+        ".validate": "newData.hasChildren(['motorId', 'accelerationX', 'accelerationY', 'accelerationZ', 'gyroX', 'gyroY', 'gyroZ', 'amplitude', 'angularVelocity', 'temperature', 'timestamp'])"
+      }
+    }
+  }
+}

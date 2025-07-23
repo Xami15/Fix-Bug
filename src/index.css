@@ -1,0 +1,126 @@
+/* src/index.css */
+
+/* Global CSS Variables for Light Theme (Default) */
+:root {
+  /* --- Background & Text Colors --- */
+  --primary-bg-color: #ffffff;
+  --secondary-bg-color: #f2f2f2;
+  --text-color: #212121;
+  --secondary-text-color: #555555;
+  --link-color: #007bff;
+
+  /* --- Sidebar & UI Elements --- */
+  --sidebar-bg-color: #e8e8e8;
+  --sidebar-text-color: #333333;
+  --border-color: #b0b0b0;
+  --input-bg-color: #fbfbfb;
+  --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+
+  /* --- General Button Variables --- */
+  --button-bg-color: hsl(214, 84%, 52%);
+  --button-text-color: #ffffff;
+  --button-border-color: #61dafb;
+  --button-hover-bg-color: #168fb4;
+
+  /* --- Accent Button Variables --- */
+  --accent-button-bg-color: #4fd7fd;
+  --accent-button-text-color: #21252e;
+  --accent-button-hover-bg-color: #037fa5;
+
+  /* --- Status Colors --- */
+  --status-normal: #4caf50;
+  --status-warning: #ffc107;
+  --status-fault: #f44336;
+  --status-disconnected: #757575;
+}
+
+/* Dark Mode Overrides - only active inside .layout-container.dark-mode */
+.layout-container.dark-mode {
+  --primary-bg-color: #1a1a1a;
+  --secondary-bg-color: #2c2c2c;
+  --text-color: #e0e0e0;
+  --secondary-text-color: #b0b0b0;
+  --link-color: #90caf9;
+
+  --sidebar-bg-color: #212121;
+  --sidebar-text-color: #e0e0e0;
+  --border-color: #505050;
+  --input-bg-color: #333333;
+  --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+
+  --button-bg-color: #007bff;
+  --button-text-color: #ffffff;
+  --button-border-color: #007bff;
+  --button-hover-bg-color: #0056b3;
+
+  --accent-button-bg-color: #61dafb;
+  --accent-button-text-color: #21252e;
+  --accent-button-hover-bg-color: #21a1f1;
+}
+
+/* Base styles using the CSS variables */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  background-color: var(--primary-bg-color);
+  color: var(--text-color);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+}
+
+.card {
+  background-color: var(--secondary-bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  padding: 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button {
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+  border: 1px solid var(--button-border-color);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--button-hover-bg-color);
+}
+
+.accent-button {
+  background-color: var(--accent-button-bg-color);
+  color: var(--accent-button-text-color);
+  border: 1px solid var(--accent-button-bg-color);
+}
+
+.accent-button:hover {
+  background-color: var(--accent-button-hover-bg-color);
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

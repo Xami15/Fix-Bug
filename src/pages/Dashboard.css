@@ -1,0 +1,201 @@
+/* src/pages/Dashboard.css */
+
+
+
+/* --- Dashboard Container --- */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure it takes full viewport height */
+  background-color: var(--primary-bg-color);
+  color: var(--text-color);
+  font-family: 'Inter', sans-serif; /* Recommended font for clarity */
+}
+
+.dashboard-main-content {
+  flex-grow: 1;
+  padding: 2rem;
+  max-width: 1400px; /* Max width for content */
+  margin: 0 auto; /* Center content */
+  width: 100%;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+/* --- Header --- */
+.dashboard-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  color: var(--text-color);
+  margin: 0;
+  flex-basis: 100%; /* Takes full width on top */
+  margin-bottom: 1rem;
+}
+
+.dashboard-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.dashboard-input {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--secondary-bg-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-input:focus {
+  border-color: var(--button-bg-color);
+  box-shadow: 0 0 0 3px rgba(97, 218, 251, 0.3);
+}
+
+.dashboard-add-button,
+.dashboard-submit-button {
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+  padding: 0.75rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.1s;
+  white-space: nowrap;
+  display: flex; /* For icon alignment */
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-add-button:hover,
+.dashboard-submit-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.dashboard-add-button:active,
+.dashboard-submit-button:active {
+  transform: translateY(0);
+}
+
+/* --- Add Motor Form --- */
+.add-motor-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  padding: 1.5rem;
+  background-color: var(--secondary-bg-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px var(--box-shadow-color);
+}
+
+.add-motor-form .dashboard-input {
+  flex-grow: 1;
+  min-width: 180px;
+}
+
+.add-motor-form .dashboard-submit-button {
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+
+/* --- All Motors Overview (Grid) --- */
+.section-title {
+  font-size: 1.8rem;
+  color: var(--text-color);
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.dashboard-grid { /* This is the new grid container for motor cards */
+    display: grid;
+    /* Use auto-fit to create as many columns as fit, with a minimum size of 220px */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem; /* Space between the cards */
+    padding: 1rem; /* Padding around the grid, integrated into the dashboard */
+    justify-content: center; /* Center the grid items if there's extra space */
+    align-items: start; /* Align items to the start of their grid cell */
+    background-color: var(--secondary-bg-color); /* Background for the grid section */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--box-shadow-color);
+}
+
+.no-motors-message {
+    text-align: center;
+    color: var(--text-color);
+    opacity: 0.8;
+    grid-column: 1 / -1; /* Center across all columns in the grid */
+    padding: 2rem;
+    font-size: 1.1rem;
+    font-style: italic;
+}
+
+/* --- Media Queries for Responsiveness --- */
+@media (max-width: 1024px) {
+  .dashboard-main-content {
+    padding: 1.5rem;
+  }
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+  .dashboard-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  /* Ensure form inputs/buttons stack on smaller screens */
+  .add-motor-form {
+    flex-direction: column;
+  }
+  .dashboard-input,
+  .dashboard-add-button,
+  .dashboard-submit-button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-main-content {
+    padding: 1rem;
+  }
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dashboard-header h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr; /* Stack cards vertically on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-input,
+  .dashboard-add-button,
+  .dashboard-submit-button {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+  .add-motor-form {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+}

@@ -1,0 +1,31 @@
+/* src/layouts/MainLayout.css */
+
+/* Layout container holds the sidebar and main content */
+.layout-container {
+  display: flex;
+  height: 100vh;
+  background-color: var(--primary-bg-color); /* background for layout */
+  color: var(--text-color); /* text color */
+}
+
+/* Main content area (right side of layout) */
+.main-content {
+  flex: 1;
+  padding: 1rem;
+  padding-top: 60px; /* ✅ Space for fixed Topbar */
+  transition: margin-left 0.3s ease;
+  overflow-y: auto;
+  margin-left: 240px; /* default sidebar width */
+  background-color: var(--secondary-bg-color);
+  border-left: 1px solid var(--border-color);
+}
+
+/* When sidebar is collapsed */
+.main-content.collapsed {
+  margin-left: 80px; /* collapsed sidebar width */
+}
+
+/* Optional: add this for smoother transition effect */
+.topbar {
+  transition: left 0.3s ease;
+}
