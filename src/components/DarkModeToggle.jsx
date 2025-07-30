@@ -10,17 +10,28 @@ const DarkModeToggle = () => {
     <button
       onClick={toggleDarkMode}
       style={{
-        padding: "6px 12px",
-        cursor: "pointer",
-        borderRadius: 4,
+        background: "none",
         border: "none",
-        backgroundColor: darkMode ? "#eee" : "#222",
-        color: darkMode ? "#222" : "#eee",
-        fontWeight: "600",
-        fontSize: 20,
+        color: "inherit",
+        cursor: "pointer",
+        padding: "8px",
+        borderRadius: "12px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        transition: "all 0.2s ease",
+        position: "relative",
+        fontSize: "20px",
+      }}
+      onMouseEnter={(e) => {
+        e.target.style.background = darkMode 
+          ? "rgba(55, 65, 81, 0.6)" 
+          : "rgba(255, 255, 255, 0.2)";
+        e.target.style.transform = "translateY(-1px)";
+      }}
+      onMouseLeave={(e) => {
+        e.target.style.background = "transparent";
+        e.target.style.transform = "translateY(0)";
       }}
       aria-label="Toggle dark mode"
     >

@@ -1,5 +1,8 @@
 // src/context/MotorsContext.jsx
-import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
+import React, {
+  createContext, useState, useContext,
+  useEffect, useCallback, useRef
+} from 'react';
 import mqtt from 'mqtt';
 
 const MotorsContext = createContext();
@@ -7,18 +10,14 @@ export const useMotors = () => useContext(MotorsContext);
 
 export const MotorsProvider = ({ children }) => {
   const [motors, setMotors] = useState(() => {
-    const savedMotors = localStorage.getItem('motors');
-    if (savedMotors) {
-      const parsedMotors = JSON.parse(savedMotors);
-      return parsedMotors.map(motor => ({
-        ...motor,
-        lastUpdated: motor.lastUpdated ? new Date(motor.lastUpdated) : null,
-        temperature: typeof motor.temperature === 'number' ? motor.temperature : null,
-        vibration: typeof motor.vibration === 'number' ? motor.vibration : null,
-        confidence: typeof motor.confidence === 'number' ? motor.confidence : 0,
-      }));
-    }
-    return [];
+    const saved = localStorage.getItem('motors');
+    return saved ? JSON.parse(saved).map(motor => ({
+      ...motor,
+      lastUpdated: motor.lastUpdated ? new Date(motor.lastUpdated) : null,
+      temperature: typeof motor.temperature === 'number' ? motor.temperature : null,
+      vibration: typeof motor.vibration === 'number' ? motor.vibration : null,
+      confidence: typeof motor.confidence === 'number' ? motor.confidence : 0,
+    })) : [];
   });
 
   const [historyData, setHistoryData] = useState(() => {
@@ -31,8 +30,8 @@ export const MotorsProvider = ({ children }) => {
 
   const mqttClientRef = useRef(null);
   const subscribedTopicsRef = useRef(new Set());
+  const pollingIntervalsRef = useRef({}); // NEW
 
-  // Save motors and historyData to localStorage
   useEffect(() => {
     localStorage.setItem('motors', JSON.stringify(
       motors.map(m => ({
@@ -46,147 +45,117 @@ export const MotorsProvider = ({ children }) => {
     localStorage.setItem('historyData', JSON.stringify(historyData));
   }, [historyData]);
 
-  // 1️⃣ Connect to MQTT once
   useEffect(() => {
     const client = mqtt.connect("wss://test.mosquitto.org:8081");
     mqttClientRef.current = client;
 
     client.on("connect", () => {
-      console.log("MotorsContext: Connected to MQTT broker");
+      console.log("MQTT connected");
       setMqttConnected(true);
     });
 
     client.on("message", (topic, message) => {
       try {
         const data = JSON.parse(message.toString());
-        const motorId = data.motor_id;
-        if (!motorId) return;
+        const { motor_id, temperature, vibration, timestamp, status, confidence } = data;
+        if (!motor_id) return;
 
-        const newTemperature = parseFloat(data.temperature);
-        const newVibration = parseFloat(data.vibration);
-        const newTimestamp = data.timestamp ? new Date(data.timestamp * 1000) : new Date();
-        const newStatus = data.status || 'Unknown';
-        const newConfidence = data.confidence || 0;
+        const time = timestamp ? new Date(timestamp * 1000) : new Date();
 
-        // Update motors only if changed
-        setMotors(prevMotors => prevMotors.map(motor => {
-          if (motor.id === motorId) {
-            const shouldUpdate =
-              motor.temperature !== newTemperature ||
-              motor.vibration !== newVibration ||
-              motor.status !== newStatus ||
-              motor.confidence !== newConfidence ||
-              (motor.lastUpdated?.getTime() || 0) !== newTimestamp.getTime();
-
-            return shouldUpdate ? {
-              ...motor,
-              temperature: newTemperature,
-              vibration: newVibration,
-              status: newStatus,
-              confidence: newConfidence,
-              lastUpdated: newTimestamp,
-            } : motor;
-          }
-          return motor;
-        }));
-
-        // Update chart history
-        setLiveMotorDataHistory(prev => {
-          const updated = { ...prev };
-          if (!updated[motorId]) {
-            updated[motorId] = { temperature: [], vibration: [], timestamps: [] };
-          }
-
-          const MAX = 60;
-          updated[motorId].temperature = [...updated[motorId].temperature.slice(-MAX + 1), newTemperature];
-          updated[motorId].vibration = [...updated[motorId].vibration.slice(-MAX + 1), newVibration];
-          updated[motorId].timestamps = [...updated[motorId].timestamps.slice(-MAX + 1), newTimestamp.toLocaleTimeString()];
-          return updated;
-        });
-
-        // Add to log
-        const motorNameForLog = motors.find(m => m.id === motorId)?.name || motorId;
-        setHistoryData(prev => [
-          ...prev,
-          {
-            id: `log-${Date.now()}-${motorId}`,
-            timestamp: newTimestamp.toISOString(),
-            motor: motorNameForLog,
-            status: newStatus,
-            confidence: newConfidence,
-            temperature: newTemperature,
-            vibration: newVibration,
-          }
-        ]);
-
-      } catch (err) {
-        console.error("MotorsContext: Failed to parse message", message.toString(), err);
+        setMotors(prev =>
+          prev.map(m =>
+            m.id === motor_id
+              ? {
+                  ...m,
+                  temperature: parseFloat(temperature),
+                  vibration: parseFloat(vibration),
+                  status: status || 'Online',
+                  confidence: confidence || 0,
+                  lastUpdated: time,
+                }
+              : m
+          )
+        );
+      } catch (e) {
+        console.error("MQTT error parsing", e);
       }
     });
 
-    client.on("error", err => {
-      console.error("MotorsContext: MQTT error", err);
-      setMqttConnected(false);
-    });
-
-    client.on("close", () => {
-      console.log("MotorsContext: MQTT disconnected");
-      setMqttConnected(false);
-    });
+    client.on("error", err => console.error("MQTT error", err));
+    client.on("close", () => setMqttConnected(false));
 
     return () => {
       if (client.connected) client.end();
       subscribedTopicsRef.current.clear();
     };
-  }, []); // connect only once
+  }, []);
 
-  // 2️⃣ Handle subscription updates when `motors` change
   useEffect(() => {
     const client = mqttClientRef.current;
     if (!client || !client.connected) return;
 
-    const currentTopics = new Set(motors.map(m => `motors/${m.id}/data`));
-    const toUnsubscribe = [];
+    const desiredTopics = new Set(motors.map(m => `motors/${m.id}/data`));
 
     subscribedTopicsRef.current.forEach(topic => {
-      if (!currentTopics.has(topic)) {
-        toUnsubscribe.push(topic);
-        client.unsubscribe(topic, err => {
-          if (err) console.error(`MotorsContext: Unsubscribe failed: ${topic}`, err);
-          else console.log(`MotorsContext: Unsubscribed from ${topic}`);
-        });
+      if (!desiredTopics.has(topic)) {
+        client.unsubscribe(topic);
+        subscribedTopicsRef.current.delete(topic);
       }
     });
 
-    toUnsubscribe.forEach(topic => subscribedTopicsRef.current.delete(topic));
-
-    motors.forEach(motor => {
-      const topic = `motors/${motor.id}/data`;
+    motors.forEach(({ id }) => {
+      const topic = `motors/${id}/data`;
       if (!subscribedTopicsRef.current.has(topic)) {
-        client.subscribe(topic, err => {
-          if (err) console.error(`MotorsContext: Subscribe failed: ${topic}`, err);
-          else {
-            console.log(`MotorsContext: Subscribed to ${topic}`);
-            subscribedTopicsRef.current.add(topic);
-          }
-        });
+        client.subscribe(topic);
+        subscribedTopicsRef.current.add(topic);
       }
     });
   }, [motors]);
 
-  // Add/remove motor logic
-  const addMotor = useCallback((motorId, motorName, motorLocation) => {
-    setMotors(prev => {
-      if (prev.some(m => m.id === motorId)) {
-        console.warn(`Motor already exists: ${motorId}`);
-        return prev;
+  // 🧠 Poll FastAPI every 2s for each motor
+  const pollMotorData = useCallback((motorId) => {
+    if (pollingIntervalsRef.current[motorId]) return; // already polling
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/api/motors/${motorId.toLowerCase()}`);
+        const data = await res.json();
+        console.log(`Polling data for ${motorId.toLowerCase()}:`, data);
+        if (!data || !data.temperature || !data.vibration) return;
+
+        const newTemp = parseFloat(data.temperature);
+        const newVib = parseFloat(data.vibration);
+        const time = data.timestamp ? new Date(data.timestamp * 1000) : new Date();
+
+        setMotors(prev =>
+          prev.map(m =>
+            m.id === motorId
+              ? {
+                  ...m,
+                  temperature: newTemp,
+                  vibration: newVib,
+                  lastUpdated: time,
+                }
+              : m
+          )
+        );
+      } catch (e) {
+        console.error(`Polling error for ${motorId}`, e);
       }
+    }, 2000); // every 2s
+
+    pollingIntervalsRef.current[motorId] = interval;
+  }, []);
+
+  const addMotor = useCallback((motorId, name, location) => {
+    setMotors(prev => {
+      if (prev.some(m => m.id === motorId)) return prev;
       return [
         ...prev,
         {
           id: motorId,
-          name: motorName,
-          location: motorLocation,
+          name,
+          location,
           temperature: null,
           vibration: null,
           status: 'Disconnected',
@@ -195,25 +164,27 @@ export const MotorsProvider = ({ children }) => {
         }
       ];
     });
-  }, []);
+    pollMotorData(motorId); // Start polling FastAPI
+  }, [pollMotorData]);
 
   const removeMotor = useCallback((motorId) => {
     setMotors(prev => prev.filter(m => m.id !== motorId));
     setLiveMotorDataHistory(prev => {
-      const copy = { ...prev };
-      delete copy[motorId];
-      return copy;
+      const updated = { ...prev };
+      delete updated[motorId];
+      return updated;
     });
 
     const topic = `motors/${motorId}/data`;
     if (mqttClientRef.current?.connected && subscribedTopicsRef.current.has(topic)) {
-      mqttClientRef.current.unsubscribe(topic, err => {
-        if (err) console.error(`MotorsContext: Failed to unsubscribe ${topic}`, err);
-        else {
-          console.log(`MotorsContext: Explicitly unsubscribed from ${topic}`);
-          subscribedTopicsRef.current.delete(topic);
-        }
-      });
+      mqttClientRef.current.unsubscribe(topic);
+      subscribedTopicsRef.current.delete(topic);
+    }
+
+    // stop polling
+    if (pollingIntervalsRef.current[motorId]) {
+      clearInterval(pollingIntervalsRef.current[motorId]);
+      delete pollingIntervalsRef.current[motorId];
     }
   }, []);
 
