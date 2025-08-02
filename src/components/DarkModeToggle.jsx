@@ -1,14 +1,40 @@
 // src/components/DarkModeToggle.jsx
 import React, { useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
-import { FaMoon, FaSun } from 'react-icons/fa';
+import { FaMoon, FaSun, FaPalette } from 'react-icons/fa';
 
 const DarkModeToggle = () => {
-  const { darkMode, toggleDarkMode } = useContext(ThemeContext);
+  const { theme, cycleTheme } = useContext(ThemeContext);
+
+  const getIcon = () => {
+    switch (theme) {
+      case 'light':
+        return <FaSun />;
+      case 'dark':
+        return <FaMoon />;
+      case 'blue':
+        return <FaPalette />;
+      default:
+        return <FaSun />;
+    }
+  };
+
+  const getTooltip = () => {
+    switch (theme) {
+      case 'light':
+        return 'Light Theme';
+      case 'dark':
+        return 'Dark Theme';
+      case 'blue':
+        return 'Blue Theme';
+      default:
+        return 'Light Theme';
+    }
+  };
 
   return (
     <button
-      onClick={toggleDarkMode}
+      onClick={cycleTheme}
       style={{
         background: "none",
         border: "none",
@@ -24,18 +50,17 @@ const DarkModeToggle = () => {
         fontSize: "20px",
       }}
       onMouseEnter={(e) => {
-        e.target.style.background = darkMode 
-          ? "rgba(55, 65, 81, 0.6)" 
-          : "rgba(255, 255, 255, 0.2)";
+        e.target.style.background = "rgba(255, 255, 255, 0.2)";
         e.target.style.transform = "translateY(-1px)";
       }}
       onMouseLeave={(e) => {
         e.target.style.background = "transparent";
         e.target.style.transform = "translateY(0)";
       }}
-      aria-label="Toggle dark mode"
+      aria-label={getTooltip()}
+      title={getTooltip()}
     >
-      {darkMode ? <FaSun /> : <FaMoon />}
+      {getIcon()}
     </button>
   );
 };

@@ -99,33 +99,61 @@ export default function Login({ onLogin, isActive }) {
           textAlign: "center",
         }}
       >
-        <h1 style={{ marginBottom: "10px" }}>Sign in</h1>
+        <h1 style={{ 
+          marginBottom: "20px",
+          color: "#333",
+          fontSize: "24px",
+          fontWeight: "600"
+        }}>
+          👋 Welcome Back
+        </h1>
+        
+        <p style={{
+          marginBottom: "25px",
+          color: "#666",
+          fontSize: "14px",
+          lineHeight: "1.5"
+        }}>
+          Sign in to access your SEP Monitoring Dashboard
+        </p>
 
         {/* Email Input */}
-        <input
-          name="email"
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          placeholder="Email"
-          required
-          style={{
-            width: "100%",
-            padding: "12px 15px",
-            margin: "8px 0",
-            background: "#eee",
-            border: "none",
-            borderRadius: "8px",
-          }}
-        />
+        <div style={{ marginBottom: "15px" }}>
+          <input
+            name="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            placeholder="Enter your email"
+            required
+            style={{
+              width: "100%",
+              padding: "15px 20px",
+              background: "#f8f9fa",
+              border: "2px solid #e1e5e9",
+              borderRadius: "12px",
+              fontSize: "16px",
+              transition: "all 0.3s ease",
+              boxSizing: "border-box",
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "#667eea";
+              e.target.style.boxShadow = "0 0 0 3px rgba(102, 126, 234, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "#e1e5e9";
+              e.target.style.boxShadow = "none";
+            }}
+          />
+        </div>
 
         {/* Password Input with Eye Icon */}
         <div
           style={{
             width: "100%",
             position: "relative",
-            margin: "8px 0",
+            marginBottom: "15px",
           }}
         >
           <input
@@ -134,28 +162,42 @@ export default function Login({ onLogin, isActive }) {
             value={pass}
             onChange={(e) => setPass(e.target.value)}
             type={showPassword ? "text" : "password"}
-            placeholder="Password"
+            placeholder="Enter your password"
             required
             style={{
               width: "100%",
-              padding: "12px 15px",
-              background: "#eee",
-              border: "none",
-              borderRadius: "8px",
-              paddingRight: "40px",
+              padding: "15px 20px",
+              background: "#f8f9fa",
+              border: "2px solid #e1e5e9",
+              borderRadius: "12px",
+              fontSize: "16px",
+              paddingRight: "50px",
               boxSizing: "border-box",
+              transition: "all 0.3s ease",
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "#667eea";
+              e.target.style.boxShadow = "0 0 0 3px rgba(102, 126, 234, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "#e1e5e9";
+              e.target.style.boxShadow = "none";
             }}
           />
           <span
             onClick={() => setShowPassword(!showPassword)}
             style={{
               position: "absolute",
-              right: "12px",
+              right: "15px",
               top: "50%",
               transform: "translateY(-50%)",
               cursor: "pointer",
-              color: "#555",
+              color: "#667eea",
+              fontSize: "18px",
+              transition: "color 0.3s ease",
             }}
+            onMouseEnter={(e) => e.target.style.color = "#4a5568"}
+            onMouseLeave={(e) => e.target.style.color = "#667eea"}
           >
             <i className={`fa-solid fa-eye${showPassword ? "-slash" : ""}`}></i>
           </span>
@@ -166,13 +208,20 @@ export default function Login({ onLogin, isActive }) {
           style={{
             width: "100%",
             textAlign: "right",
-            fontSize: "12px",
-            marginTop: "5px",
+            fontSize: "14px",
+            marginBottom: "20px",
           }}
         >
           <a
             href="/forgot-password"
-            style={{ color: "#001f4d", textDecoration: "none" }}
+            style={{ 
+              color: "#667eea", 
+              textDecoration: "none",
+              fontWeight: "500",
+              transition: "color 0.3s ease"
+            }}
+            onMouseEnter={(e) => e.target.style.color = "#4a5568"}
+            onMouseLeave={(e) => e.target.style.color = "#667eea"}
           >
             Forgot Password?
           </a>
@@ -182,30 +231,44 @@ export default function Login({ onLogin, isActive }) {
         <button
           type="submit"
           style={{
-            minWidth: "140px",
-            padding: "12px 45px",
-            marginTop: "16px",
-            fontSize: "14px",
-            fontWeight: "bold",
+            width: "100%",
+            padding: "15px 20px",
+            marginBottom: "20px",
+            fontSize: "16px",
+            fontWeight: "600",
             color: "#fff",
-            background: "#001f4d",
+            background: "#667eea",
             border: "none",
-            borderRadius: "10px",
+            borderRadius: "12px",
             cursor: "pointer",
+            transition: "all 0.3s ease",
+            boxShadow: "0 4px 15px rgba(102, 126, 234, 0.3)",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "translateY(-2px)";
+            e.target.style.boxShadow = "0 6px 20px rgba(102, 126, 234, 0.4)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 4px 15px rgba(102, 126, 234, 0.3)";
           }}
         >
-          Sign In
+          🔐 Sign In
         </button>
 
         {/* Divider */}
         <div
           style={{
-            margin: "20px 0 10px",
+            margin: "20px 0",
+            display: "flex",
+            alignItems: "center",
             fontSize: "14px",
             color: "#999",
           }}
         >
-          or
+          <div style={{ flex: 1, height: "1px", background: "#e1e5e9" }}></div>
+          <span style={{ margin: "0 15px" }}>or</span>
+          <div style={{ flex: 1, height: "1px", background: "#e1e5e9" }}></div>
         </div>
 
         {/* Google Sign-In */}
@@ -216,23 +279,33 @@ export default function Login({ onLogin, isActive }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "10px",
+            gap: "12px",
             width: "100%",
-            padding: "10px",
-            fontSize: "14px",
-            color: "#444",
-            background: "#f2f2f2",
-            border: "1px solid #ccc",
-            borderRadius: "10px",
+            padding: "15px 20px",
+            fontSize: "16px",
+            color: "#4a5568",
+            background: "#fff",
+            border: "2px solid #e1e5e9",
+            borderRadius: "12px",
             cursor: "pointer",
+            transition: "all 0.3s ease",
+            fontWeight: "500",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.borderColor = "#667eea";
+            e.target.style.boxShadow = "0 4px 15px rgba(102, 126, 234, 0.1)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.borderColor = "#e1e5e9";
+            e.target.style.boxShadow = "none";
           }}
         >
           <img
             src="https://developers.google.com/identity/images/g-logo.png"
             alt="Google icon"
-            style={{ width: "18px", height: "18px" }}
+            style={{ width: "20px", height: "20px" }}
           />
-          Sign in with Google
+          Continue with Google
         </button>
       </form>
     </div>

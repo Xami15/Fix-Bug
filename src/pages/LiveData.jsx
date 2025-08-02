@@ -1,5 +1,5 @@
 // src/pages/LiveData.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,19 +12,55 @@ import {
 } from "chart.js";
 
 import { useMotors } from "../context/MotorsContext";
+import { ThemeContext } from "../context/ThemeContext";
 import "./LiveData.css";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Legend, Tooltip);
 
 export default function LiveData() {
   const { motors, liveMotorDataHistory, mqttConnected } = useMotors();
+  const { theme } = useContext(ThemeContext);
   const [selectedMotorId, setSelectedMotorId] = useState("");
 
-  const chartTextColor = "#333"; // Light theme text color
-  const chartLabelColor = "#6b7280";
-  const chartGridColor = "rgba(0,0,0,0.1)";
-  const chartTooltipBg = "rgba(0,0,0,0.8)";
-  const chartTooltipColor = "#fff";
+  // Theme-aware chart colors
+  const getChartColors = () => {
+    switch (theme) {
+      case 'light':
+        return {
+          textColor: "#333",
+          labelColor: "#6b7280",
+          gridColor: "rgba(0,0,0,0.1)",
+          tooltipBg: "rgba(0,0,0,0.8)",
+          tooltipColor: "#fff"
+        };
+      case 'dark':
+        return {
+          textColor: "#ffffff",
+          labelColor: "#9ca3af",
+          gridColor: "rgba(255,255,255,0.1)",
+          tooltipBg: "rgba(0,0,0,0.9)",
+          tooltipColor: "#fff"
+        };
+      case 'blue':
+        return {
+          textColor: "#f1f5f9",
+          labelColor: "#94a3b8",
+          gridColor: "rgba(241,245,249,0.1)",
+          tooltipBg: "rgba(15,23,42,0.9)",
+          tooltipColor: "#f1f5f9"
+        };
+      default:
+        return {
+          textColor: "#333",
+          labelColor: "#6b7280",
+          gridColor: "rgba(0,0,0,0.1)",
+          tooltipBg: "rgba(0,0,0,0.8)",
+          tooltipColor: "#fff"
+        };
+    }
+  };
+
+  const chartColors = getChartColors();
 
   // Effect to set initial selected motor or adjust if motors change
   useEffect(() => {
@@ -107,23 +143,26 @@ export default function LiveData() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        labels: { font: { size: 14, weight: "600" }, color: chartTextColor },
+        labels: { 
+          font: { size: 14, weight: "600" }, 
+          color: chartColors.textColor 
+        },
       },
       tooltip: {
-        backgroundColor: chartTooltipBg,
-        titleColor: chartTooltipColor,
-        bodyColor: chartTooltipColor,
+        backgroundColor: chartColors.tooltipBg,
+        titleColor: chartColors.tooltipColor,
+        bodyColor: chartColors.tooltipColor,
       },
     },
     scales: {
       y: {
         beginAtZero: true,
-        grid: { color: chartGridColor },
-        ticks: { font: { size: 13 }, color: chartTextColor },
+        grid: { color: chartColors.gridColor },
+        ticks: { font: { size: 13 }, color: chartColors.textColor },
       },
       x: {
         grid: { display: false },
-        ticks: { font: { size: 12 }, color: chartLabelColor },
+        ticks: { font: { size: 12 }, color: chartColors.labelColor },
       },
     },
   };
@@ -204,7 +243,7 @@ export default function LiveData() {
         {selectedMotorId ? (
           <Line data={chartData} options={options} />
         ) : (
-          <p style={{ textAlign: 'center', fontSize: '1.2rem', marginTop: '2rem', color: chartTextColor }}>
+          <p style={{ textAlign: 'center', fontSize: '1.2rem', marginTop: '2rem', color: chartColors.textColor }}>
             Select a motor to see chart data.
           </p>
         )}

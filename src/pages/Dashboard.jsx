@@ -1,244 +1,287 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { getAuth } from 'firebase/auth';
 import { useMotors } from '../context/MotorsContext';
 import MotorDetailCard from '../components/MotorDetailCard';
+import MotorAdditionWizard from '../components/MotorAdditionWizard';
+import MotorTroubleshootingGuide from '../components/MotorTroubleshootingGuide';
 import './Dashboard.css';
 import { supabase } from '../utils/supabase';
 import { auth as firebaseAuthInstance } from '../firebaseConfig';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
-/**
- * Motor3D Component
- * Renders a 3D representation of a motor using react-three-fiber.
- * The motor can rotate based on the `isRotating` prop.
- */
-function Motor3D({ isRotating }) {
-  // useRef to get a direct reference to the mesh object for animations
-  const meshRef = useRef();
+// A single component for the 3D motor, making the scene cleaner.
+function MotorModel({ isRotating }) {
+  const motorRef = useRef();
 
-  // useFrame hook runs on each frame, allowing for animations
+  // Create a clean, industrial look with materials
+  const metalMaterial = new THREE.MeshStandardMaterial({
+    color: '#b0b0b0',
+    metalness: 0.9,
+    roughness: 0.3,
+  });
+
+  const bodyMaterial = new THREE.MeshStandardMaterial({
+    color: '#2a3b4c',
+    metalness: 0.6,
+    roughness: 0.5,
+  });
+  
+  const terminalBoxMaterial = new THREE.MeshStandardMaterial({
+    color: '#4f5e6a',
+    metalness: 0.8,
+    roughness: 0.4,
+  });
+
+  const wireMaterial = new THREE.MeshStandardMaterial({
+    color: '#e74c3c',
+    metalness: 0.1,
+    roughness: 0.9,
+  });
+
   useFrame((state, delta) => {
-    if (meshRef.current && isRotating) {
-      // Rotate the motor around the Y-axis if isRotating is true
-      meshRef.current.rotation.y += delta * 2;
+    if (motorRef.current && isRotating) {
+      motorRef.current.rotation.y += delta * 2;
     }
   });
 
   return (
-    // Group all motor parts together
-    <group position={[0, 0, 0]}>
-      {/* Motor Body: A cylinder representing the main casing */}
-      <mesh ref={meshRef} position={[0, 0, 0]}>
-        <cylinderGeometry args={[1, 1, 2, 32]} />
-        <meshStandardMaterial color="#f7f9fcff" metalness={0.7} roughness={0.3} />
+    <group ref={motorRef} position={[0, 0, 0]}>
+      {/* Main Motor Casing */}
+      <mesh material={bodyMaterial}>
+        <cylinderGeometry args={[1, 1, 2, 64]} />
       </mesh>
 
-      {/* Motor Shaft: A smaller cylinder extending from one end */}
-      <mesh position={[0, 0, 1.2]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.2, 0.2, 0.5, 16]} />
-        <meshStandardMaterial color="#2d3748" metalness={0.9} roughness={0.1} />
+      {/* Front End Cap - A more detailed geometry with a flange */}
+      <mesh material={metalMaterial} position={[0, 0, 1.05]}>
+        <cylinderGeometry args={[1.1, 1.1, 0.1, 64]} />
       </mesh>
-
-      {/* Motor End Caps: Thin cylinders at both ends of the motor body */}
-      <mesh position={[0, 0, -1]}>
-        <cylinderGeometry args={[1, 1, 0.1, 32]} />
-        <meshStandardMaterial color="#718096" metalness={0.5} roughness={0.4} />
+      <mesh material={metalMaterial} position={[0, 0, 1.1]}>
+        <cylinderGeometry args={[0.9, 0.9, 0.1, 64]} />
       </mesh>
-
-      <mesh position={[0, 0, 1]}>
-        <cylinderGeometry args={[1, 1, 0.1, 32]} />
-        <meshStandardMaterial color="#718096" metalness={0.5} roughness={0.4} />
+      
+      {/* Rear End Cap with Ventilation Holes */}
+      <mesh material={metalMaterial} position={[0, 0, -1.05]}>
+        <cylinderGeometry args={[1.1, 1.1, 0.1, 64]} />
       </mesh>
-
-      {/* Ventilation Holes: Small cylinders arranged around one end cap */}
-      {[...Array(8)].map((_, i) => {
-        const angle = (i / 8) * Math.PI * 2;
-        const x = Math.cos(angle) * 0.7;
-        const y = Math.sin(angle) * 0.7;
+      <mesh material={metalMaterial} position={[0, 0, -1.1]}>
+        <cylinderGeometry args={[0.9, 0.9, 0.1, 64]} />
+      </mesh>
+      {[...Array(12)].map((_, i) => {
+        const angle = (i / 12) * Math.PI * 2;
+        const x = Math.cos(angle) * 0.95;
+        const y = Math.sin(angle) * 0.95;
         return (
-          <mesh key={i} position={[x, y, -1.05]}>
-            <cylinderGeometry args={[0.1, 0.1, 0.05, 16]} />
-            <meshStandardMaterial color="#606369ff" />
+          <mesh key={`vent-${i}`} position={[x, y, -1.1]}>
+            <cylinderGeometry args={[0.05, 0.05, 0.1, 8]} />
+            <meshStandardMaterial color="#1a202c" />
           </mesh>
         );
       })}
 
-      {/* Connection Box: A rectangular box on the side of the motor */}
-      <mesh position={[0.8, 0, 0.5]}>
-        <boxGeometry args={[0.6, 0.8, 0.4]} />
-        <meshStandardMaterial color="#2b6cb0" />
+      {/* Motor Shaft */}
+      <mesh material={metalMaterial} position={[0, 0, 1.3]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.2, 0.2, 0.4, 32]} />
       </mesh>
 
-      {/* Connection Wires: Small boxes representing wires coming out of the connection box */}
-      <mesh position={[1.2, 0.2, 0.5]}>
-        <boxGeometry args={[0.1, 0.05, 0.05]} />
-        <meshStandardMaterial color="#c53030" />
+      {/* Terminal Box - More defined shape */}
+      <mesh material={terminalBoxMaterial} position={[0.8, 0.5, 0]}>
+        <boxGeometry args={[0.6, 0.8, 0.6]} />
       </mesh>
-      <mesh position={[1.2, 0, 0.5]}>
-        <boxGeometry args={[0.1, 0.05, 0.05]} />
-        <meshStandardMaterial color="#38a169" />
+      <mesh material={terminalBoxMaterial} position={[1.1, 0.5, 0]}>
+        <boxGeometry args={[0.1, 0.7, 0.5]} />
       </mesh>
-      <mesh position={[1.2, -0.2, 0.5]}>
-        <boxGeometry args={[0.1, 0.05, 0.05]} />
-        <meshStandardMaterial color="#3182ce" />
+      <mesh material={terminalBoxMaterial} position={[1.2, 0.5, 0]}>
+        <boxGeometry args={[0.05, 0.6, 0.4]} />
+      </mesh>
+
+      {/* Wires from Terminal Box */}
+      <mesh material={wireMaterial} position={[1.4, 0.7, 0]}>
+        <boxGeometry args={[0.2, 0.05, 0.05]} />
+      </mesh>
+      <mesh material={wireMaterial} position={[1.4, 0.5, 0]}>
+        <boxGeometry args={[0.2, 0.05, 0.05]} />
+      </mesh>
+      <mesh material={wireMaterial} position={[1.4, 0.3, 0]}>
+        <boxGeometry args={[0.2, 0.05, 0.05]} />
       </mesh>
     </group>
   );
 }
 
-/**
- * MotorScene Component
- * Sets up the 3D environment for the Motor3D component, including lighting and camera controls.
- */
-function MotorScene({ isRotating }) {
+// Separate component for the entire 3D scene
+function IndustrialScene({ isRotating }) {
   return (
     <>
-      {/* Ambient light to illuminate all objects equally */}
-      <ambientLight intensity={0.5} />
-      {/* Point lights for specific illumination and shadows */}
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#4299e1" />
-      {/* Render the 3D motor model */}
-      <Motor3D isRotating={isRotating} />
-      {/* OrbitControls allows users to rotate, zoom, and pan the camera */}
+      {/* High-quality lighting and environment for a professional look */}
+      <ambientLight intensity={0.3} />
+      <directionalLight position={[5, 10, 7.5]} intensity={1.5} castShadow />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} />
+      <spotLight
+        position={[0, 5, 5]}
+        angle={0.3}
+        penumbra={1}
+        intensity={2}
+        castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+      />
+
+      {/* A simple plane as the ground for shadows */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]} receiveShadow>
+        <planeGeometry args={[20, 20]} />
+        <meshStandardMaterial color="#4f5e6a" />
+      </mesh>
+
+      {/* The actual motor model */}
+      <MotorModel isRotating={isRotating} />
+      
+      {/* CORRECTED: Use a valid preset like "warehouse" */}
+      <Environment preset="warehouse" />
+
       <OrbitControls
         enableZoom={true}
         enablePan={true}
         minDistance={3}
-        maxDistance={10}
+        maxDistance={15}
+        target={[0, 0, 0]}
       />
-      {/* PerspectiveCamera defines the view frustum */}
-      <PerspectiveCamera makeDefault position={[0, 2, 5]} />
+      <PerspectiveCamera makeDefault position={[0, 2, 5]} fov={50} />
     </>
   );
 }
 
-/**
- * Dashboard Component
- * Manages the display of motors, allows adding new motors, and shows a 3D visualization.
- */
+// The main Dashboard component remains mostly the same, but with cleaner JSX for the 3D modal
 export default function Dashboard() {
-  // Destructure motor management functions from the MotorsContext
   const { motors, addMotor, removeMotor } = useMotors();
-
-  // State for new motor form inputs
   const [newMotorNameInput, setNewMotorNameInput] = useState('');
   const [newMotorLocation, setNewMotorLocation] = useState('');
   const [newMotorIdInput, setNewMotorIdInput] = useState('');
-  // State to control visibility of the add motor form
   const [showAddMotorForm, setShowAddMotorForm] = useState(false);
-  // State to store the current authenticated user's ID
   const [userId, setUserId] = useState(null);
-  // State to store the currently selected motor for 3D visualization
   const [selectedMotor, setSelectedMotor] = useState(null);
-  // State to control the rotation animation of the 3D motor
   const [isMotorRotating, setIsMotorRotating] = useState(false);
+  const [isAddingMotor, setIsAddingMotor] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const [showWizard, setShowWizard] = useState(false);
+  const [showTroubleshooting, setShowTroubleshooting] = useState(false);
 
-  /**
-   * useEffect hook to get the current Firebase authenticated user
-   * and fetch motors associated with their ID on component mount.
-   */
   useEffect(() => {
-    const auth = getAuth(); // Get the Firebase Auth instance
-    const currentUser = auth.currentUser; // Get the current user
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
 
     if (currentUser) {
-      const uid = currentUser.email; // Use email as UID for Supabase company_id
-      setUserId(uid); // Set the userId state
-      fetchMotors(uid); // Fetch motors for this user
+      const uid = currentUser.email;
+      setUserId(uid);
+      fetchMotors(uid);
     } else {
       console.warn("No authenticated Firebase user found.");
     }
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
 
-  /**
-   * useEffect hook to generate a suggested unique motor ID
-   * and clear input fields when the add motor form is shown/hidden.
-   */
   useEffect(() => {
     if (showAddMotorForm) {
-      // Extract numeric parts from existing motor IDs
       const motorNumbers = motors
         .map(motor => {
           const motorIdString = String(motor.id);
-          const match = motorIdString.match(/(\d+)$/); // Regex to find trailing numbers
-          return match ? parseInt(match[1], 10) : 0; // Convert to integer, default to 0
+          const match = motorIdString.match(/(\d+)$/);
+          return match ? parseInt(match[1], 10) : 0;
         })
-        .filter(num => !isNaN(num)); // Filter out any non-numeric results
+        .filter(num => !isNaN(num));
 
-      // Calculate the next available number for the motor ID
       const lastNumber = motorNumbers.length > 0 ? Math.max(...motorNumbers) : 0;
       const nextNumber = lastNumber + 1;
-      // Format the number to be three digits (e.g., 1 -> 001)
       const formattedNextNumber = String(nextNumber).padStart(3, '0');
-      // Construct the suggested motor ID
       const generatedId = `MOTOR-${formattedNextNumber}`;
-      setNewMotorIdInput(generatedId); // Set the suggested ID in the input field
+      setNewMotorIdInput(generatedId);
     } else {
-      // Clear input fields when the form is closed
       setNewMotorIdInput('');
       setNewMotorNameInput('');
       setNewMotorLocation('');
+      setFormErrors({});
     }
-  }, [showAddMotorForm, motors]); // Depends on form visibility and current motors list
+  }, [showAddMotorForm, motors]);
 
-  /**
-   * Asynchronously fetches motors from the Supabase database
-   * for a given user ID (company_id).
-   * @param {string} uid - The user's ID (company_id in Supabase).
-   */
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!newMotorNameInput.trim()) {
+      errors.name = 'Motor name is required';
+    } else if (newMotorNameInput.trim().length < 3) {
+      errors.name = 'Motor name must be at least 3 characters';
+    }
+    
+    if (!newMotorIdInput.trim()) {
+      errors.id = 'Motor ID is required';
+    } else if (!/^[A-Z0-9-]+$/.test(newMotorIdInput.trim())) {
+      errors.id = 'Motor ID can only contain uppercase letters, numbers, and hyphens';
+    }
+    
+    if (!newMotorLocation.trim()) {
+      errors.location = 'Location is required';
+    }
+    
+    if (!userId) {
+      errors.auth = 'You must be logged in to add motors';
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const fetchMotors = async (uid) => {
     console.log(`DEBUG: fetchMotors called for UID: "${uid}"`);
-    // Query Supabase for motors belonging to the current company_id
     const { data, error } = await supabase
       .from('motors')
-      .select('motor_id, company_id, location, motor_name, installed_at')
-      .eq('company_id', uid); // Filter by company_id
+      .select('motor_id, company_id, location, motor_name, installed_at, status')
+      .eq('company_id', uid);
 
     if (error) {
       console.error('Error fetching motors from Supabase:', error);
-      // Use a custom modal or toast for user feedback instead of alert()
-      // For now, using alert as per instruction, but ideally this would be a better UI.
-      alert('Failed to fetch motors from database.');
+      alert('Failed to load existing motors. Please refresh the page.');
     } else {
       console.log("DEBUG: Motors data fetched:", data);
-      // Add fetched motors to the application's state via MotorsContext
       data.forEach((motor) => {
         addMotor(
           motor.motor_id,
           motor.motor_name,
           motor.location,
           motor.company_id,
-          null, // No current data for this example
+          motor.status,
           motor.installed_at
         );
       });
     }
   };
 
-  /**
-   * Handles the submission of the add new motor form.
-   * Validates inputs, checks for unique motor ID, and inserts into Supabase.
-   * @param {Event} e - The form submission event.
-   */
   const handleAddMotor = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-
-    // Trim input values to remove leading/trailing whitespace
-    const motorId = newMotorIdInput.trim();
-    const motorName = newMotorNameInput.trim();
-    const location = newMotorLocation.trim();
-    const currentCompanyId = userId; // Get the current user's ID
-
-    // Basic validation for required fields
-    if (!motorId || !motorName || !location || !currentCompanyId) {
-      alert('Please fill in all fields: Motor Name, Unique Motor ID, and Location, and ensure you are logged in.');
+    e.preventDefault();
+    
+    if (!validateForm()) {
       return;
     }
+    
+    setIsAddingMotor(true);
+    
+    try {
+      const motorId = newMotorIdInput.trim();
+      const motorName = newMotorNameInput.trim();
+      const location = newMotorLocation.trim();
+      const currentCompanyId = userId;
 
-    // Check if a motor with the same ID already exists for this company
+      await addMotorToDatabase(motorId, motorName, location, currentCompanyId);
+      
+    } catch (error) {
+      console.error('Unexpected error adding motor:', error);
+      alert('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsAddingMotor(false);
+    }
+  };
+
+  const addMotorToDatabase = async (motorId, motorName, location, currentCompanyId) => {
+    // Check for existing motor ID
     const { data: existingMotors, error: fetchError } = await supabase
       .from('motors')
       .select('motor_id')
@@ -247,70 +290,90 @@ export default function Dashboard() {
 
     if (fetchError) {
       console.error('Error checking for existing motor ID:', fetchError);
-      alert('Failed to verify motor ID uniqueness. Please try again.');
+      alert('Failed to check for existing motor ID. Please try again.');
       return;
     }
 
     if (existingMotors && existingMotors.length > 0) {
-      alert(`The Motor ID "${motorId}" already exists for your company. Please choose a different ID.`);
+      setFormErrors({ id: `Motor ID "${motorId}" already exists. Please choose a different ID.` });
       return;
     }
 
-    // Set the installation timestamp
     const installedAt = new Date().toISOString();
+    const status = "Stopped";
 
-    // Insert the new motor into the Supabase 'motors' table
     const { error } = await supabase.from('motors').insert([
       {
         motor_id: motorId,
         motor_name: motorName,
-        company_id: firebaseAuthInstance.currentUser.email, // Use Firebase auth email as company_id
+        company_id: firebaseAuthInstance.currentUser.email,
         location: location,
         installed_at: installedAt,
+        status: status
       },
     ]);
 
     if (error) {
       console.error('Failed to insert new motor into Supabase:', error);
-      alert('Failed to add motor. Please try again. Error: ' + error.message);
+      alert('Failed to add motor. Please check your connection and try again.');
       return;
     }
 
-    // Refresh the list of motors from the database and update context
     await fetchMotors(currentCompanyId);
-    // Also add to the local context immediately for faster UI update
-    addMotor(motorId, motorName, location, currentCompanyId, null, installedAt);
+    addMotor(motorId, motorName, location, currentCompanyId, status, installedAt);
 
-    // Clear form inputs and hide the form
+    // Success feedback
+    alert(`Motor "${motorName}" (${motorId}) has been successfully added!`);
+    
     setNewMotorIdInput('');
     setNewMotorNameInput('');
     setNewMotorLocation('');
     setShowAddMotorForm(false);
+    setFormErrors({});
   };
 
-  /**
-   * Handles the selection of a motor from the list,
-   * triggering the display of the 3D animation modal.
-   * @param {object} motor - The motor object to be selected.
-   */
+  const handleWizardAddMotor = async (formData) => {
+    setIsAddingMotor(true);
+    
+    try {
+      const motorId = formData.id.trim();
+      const motorName = formData.name.trim();
+      const location = formData.location.trim();
+      const currentCompanyId = userId;
+
+      await addMotorToDatabase(motorId, motorName, location, currentCompanyId);
+      setShowWizard(false);
+      
+    } catch (error) {
+      console.error('Unexpected error adding motor via wizard:', error);
+      alert('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsAddingMotor(false);
+    }
+  };
+
   const handleSelectMotor = (motor) => {
-    setSelectedMotor(motor); // Set the selected motor
-    setIsMotorRotating(true); // Start the 3D motor rotation
+    setSelectedMotor(motor);
+    // Set rotation based on the motor's actual status
+    setIsMotorRotating(motor.status === "Running"); 
   };
 
-  /**
-   * Handles closing the 3D motor animation modal.
-   * Stops the rotation and clears the selected motor after a brief delay.
-   */
   const handleCloseAnimation = () => {
-    setIsMotorRotating(false); // Stop the 3D motor rotation
-    // Add a small timeout to allow the rotation to visibly stop before unmounting
+    setIsMotorRotating(false);
     setTimeout(() => {
-      setSelectedMotor(null); // Clear the selected motor to close the modal
+      setSelectedMotor(null);
     }, 300);
   };
+  
+  const toggleMotorStatus = () => {
+    // This is a client-side only toggle for demonstration.
+    // In a real application, you would update the database and then re-fetch.
+    const newStatus = isMotorRotating ? "Stopped" : "Running";
+    setIsMotorRotating(!isMotorRotating);
+    // You would update the motor in your global state and database here.
+    console.log(`Motor ${selectedMotor.id} status changed to ${newStatus}`);
+  };
 
-  // Prepare motors data for display, ensuring 'lastUpdated' or 'installed_at' is formatted
   const motorsForDisplay = motors.map((motor) => ({
     ...motor,
     displayLastUpdated: motor.lastUpdated instanceof Date
@@ -324,59 +387,79 @@ export default function Dashboard() {
         <div className="dashboard-header">
           <h1>Motors Dashboard</h1>
           <div className="dashboard-controls">
-            {/* Button to toggle the add motor form visibility */}
+            <button
+              onClick={() => setShowWizard(true)}
+              className="dashboard-add-button wizard-button"
+            >
+              <span>🚀</span> Quick Add Motor
+            </button>
             <button
               onClick={() => setShowAddMotorForm(!showAddMotorForm)}
               className="dashboard-add-button"
             >
-              {showAddMotorForm ? 'Close Form' : 'Add New Motor'}
+              {showAddMotorForm ? 'Close Form' : 'Advanced Add Motor'}
+            </button>
+            <button
+              onClick={() => setShowTroubleshooting(true)}
+              className="dashboard-add-button help-button"
+            >
+              <span>❓</span> Need Help?
             </button>
           </div>
         </div>
-
-        {/* Add Motor Form: Conditionally rendered */}
         {showAddMotorForm && (
           <form className="add-motor-form" onSubmit={handleAddMotor}>
-            <input
-              type="text"
-              placeholder="Descriptive Motor Name (e.g., HVAC Unit 1, Pump 3)"
-              value={newMotorNameInput}
-              onChange={(e) => setNewMotorNameInput(e.target.value)}
-              className="dashboard-input"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Unique Motor ID (e.g., MOTOR-001 - must match hardware label)"
-              value={newMotorIdInput}
-              onChange={(e) => setNewMotorIdInput(e.target.value)}
-              className="dashboard-input"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Location (e.g., Assembly Line A)"
-              value={newMotorLocation}
-              onChange={(e) => setNewMotorLocation(e.target.value)}
-              className="dashboard-input"
-              required
-            />
+            <div className="form-field-group">
+              <input
+                type="text"
+                placeholder="Descriptive Motor Name (e.g., HVAC Unit 1, Pump 3)"
+                value={newMotorNameInput}
+                onChange={(e) => setNewMotorNameInput(e.target.value)}
+                className={`dashboard-input ${formErrors.name ? 'error' : ''}`}
+                required
+              />
+              {formErrors.name && <span className="error-message">{formErrors.name}</span>}
+            </div>
+            
+            <div className="form-field-group">
+              <input
+                type="text"
+                placeholder="Unique Motor ID (e.g., MOTOR-001 - must match hardware label)"
+                value={newMotorIdInput}
+                onChange={(e) => setNewMotorIdInput(e.target.value)}
+                className={`dashboard-input ${formErrors.id ? 'error' : ''}`}
+                required
+              />
+              {formErrors.id && <span className="error-message">{formErrors.id}</span>}
+            </div>
+            
+            <div className="form-field-group">
+              <input
+                type="text"
+                placeholder="Location (e.g., Assembly Line A)"
+                value={newMotorLocation}
+                onChange={(e) => setNewMotorLocation(e.target.value)}
+                className={`dashboard-input ${formErrors.location ? 'error' : ''}`}
+                required
+              />
+              {formErrors.location && <span className="error-message">{formErrors.location}</span>}
+            </div>
+            
+            {formErrors.auth && <div className="auth-error-message">{formErrors.auth}</div>}
+            
             <button
               type="submit"
               className="dashboard-submit-button"
-              disabled={!userId} // Disable if user is not logged in
+              disabled={!userId || isAddingMotor}
             >
-              Add Motor
+              {isAddingMotor ? 'Adding Motor...' : 'Add Motor'}
             </button>
           </form>
         )}
-
-        {/* 3D Motor Animation Modal: Conditionally rendered when a motor is selected */}
         {selectedMotor && (
           <div className="motor-animation-modal">
             <div className="motor-animation-header">
               <h2>{selectedMotor.name} - 3D Visualization</h2>
-              {/* Close button for the modal */}
               <button
                 className="close-animation-button"
                 onClick={handleCloseAnimation}
@@ -385,22 +468,21 @@ export default function Dashboard() {
               </button>
             </div>
             <div className="motor-animation-content">
-              {/* Canvas for the 3D scene */}
-              <Canvas className="motor-canvas">
-                <MotorScene isRotating={isMotorRotating} />
+              <Canvas className="motor-canvas" shadows>
+                <Suspense fallback={null}>
+                  <IndustrialScene isRotating={isMotorRotating} />
+                </Suspense>
               </Canvas>
-              {/* Panel displaying motor details and control buttons */}
               <div className="motor-info-panel">
                 <h3>Motor Details</h3>
                 <p><strong>ID:</strong> {selectedMotor.id}</p>
                 <p><strong>Name:</strong> {selectedMotor.name}</p>
                 <p><strong>Location:</strong> {selectedMotor.location}</p>
-                <p><strong>Status:</strong> <span className="status-running">Running</span></p>
+                <p><strong>Status:</strong> <span className={isMotorRotating ? "status-running" : "status-stopped"}>{isMotorRotating ? "Running" : "Stopped"}</span></p>
                 <div className="control-buttons">
-                  {/* Button to start/stop motor rotation */}
                   <button
                     className={isMotorRotating ? "control-button stop" : "control-button start"}
-                    onClick={() => setIsMotorRotating(!isMotorRotating)}
+                    onClick={toggleMotorStatus}
                   >
                     {isMotorRotating ? "Stop Motor" : "Start Motor"}
                   </button>
@@ -409,21 +491,17 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-
-        {/* All Motors Overview Section */}
         <h2 className="section-title">All Motors Overview</h2>
         <div className="dashboard-grid">
           {motors.length === 0 ? (
-            // Message displayed if no motors are added yet
             <p className="no-motors-message">
               No motors added yet. Click "Add New Motor" to get started.
             </p>
           ) : (
-            // Map through motors and display MotorDetailCard for each
             motorsForDisplay.map((motor) => (
               <div
                 key={motor.id}
-                onClick={() => handleSelectMotor(motor)} // Click to open 3D animation
+                onClick={() => handleSelectMotor(motor)}
                 className="motor-card-wrapper"
               >
                 <MotorDetailCard
@@ -435,6 +513,20 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+      
+      {showWizard && (
+        <MotorAdditionWizard
+          onAddMotor={handleWizardAddMotor}
+          onClose={() => setShowWizard(false)}
+          userId={userId}
+        />
+      )}
+      
+      {showTroubleshooting && (
+        <MotorTroubleshootingGuide
+          onClose={() => setShowTroubleshooting(false)}
+        />
+      )}
     </div>
   );
 }

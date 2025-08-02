@@ -1,6 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaCamera, FaSignOutAlt, FaFileCsv, FaFilePdf, FaTrashAlt, FaBell, FaEye, FaCog, FaDatabase, FaUser, FaLock } from "react-icons/fa";
+import {
+  FaCamera,
+  FaSignOutAlt,
+  FaFileCsv,
+  FaFilePdf,
+  FaTrashAlt,
+  FaUserCircle,
+  FaBell,
+  FaThermometerHalf,
+  FaDatabase,
+  FaCogs,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaCalendarAlt,
+  FaMinusCircle,
+  FaPaperPlane,
+  FaSave
+} from "react-icons/fa";
 import "./Settings.css";
 
 export default function Settings() {
@@ -8,25 +25,90 @@ export default function Settings() {
 
   // Profile states
   const [profilePic, setProfilePic] = useState(() => localStorage.getItem("profilePic") || "");
-  const [emailAlerts, setEmailAlerts] = useState(false);
-  const [smsPushNotifications, setSmsPushNotifications] = useState(false);
 
-  // Display preferences
-  const [temperatureUnit, setTemperatureUnit] = useState("°C");
-  const [vibrationUnit, setVibrationUnit] = useState("m/s²");
+  // Notification states
+  const [emailAlerts, setEmailAlerts] = useState(() => localStorage.getItem("emailAlerts") === "true");
+  const [smsPushNotifications, setSmsPushNotifications] = useState(() => localStorage.getItem("smsPushNotifications") === "true");
+
+  // State for individual email/phone input
+  const [newNotificationEmail, setNewNotificationEmail] = useState("");
+  const [newNotificationPhone, setNewNotificationPhone] = useState("");
+
+  // Notification contact details to allow multiple (stored as JSON string in localStorage)
+  const [notificationEmails, setNotificationEmails] = useState(() => {
+    const storedEmails = localStorage.getItem("notificationEmails");
+    return storedEmails ? JSON.parse(storedEmails) : [];
+  });
+  const [notificationPhones, setNotificationPhones] = useState(() => {
+    const storedPhones = localStorage.getItem("notificationPhones");
+    return storedPhones ? JSON.parse(storedPhones) : [];
+  });
 
   // Sensor/device settings
-  const [tempThreshold, setTempThreshold] = useState(30);
-  const [vibrationThreshold, setVibrationThreshold] = useState(5);
-  const [calibrationValue, setCalibrationValue] = useState(0);
+  const [temperatureUnit, setTemperatureUnit] = useState(() => localStorage.getItem("temperatureUnit") || "°C");
+  const [vibrationUnit, setVibrationUnit] = useState(() => localStorage.getItem("vibrationUnit") || "m/s²");
+  const [tempThreshold, setTempThreshold] = useState(() => Number(localStorage.getItem("tempThreshold")) || 30);
+  const [vibrationThreshold, setVibrationThreshold] = useState(() => Number(localStorage.getItem("vibrationThreshold")) || 5);
+  const [calibrationValue, setCalibrationValue] = useState(() => Number(localStorage.getItem("calibrationValue")) || 0);
 
   // Data settings
-  const [dataRetentionDays, setDataRetentionDays] = useState(30);
+  const [dataRetentionDays, setDataRetentionDays] = useState(() => Number(localStorage.getItem("dataRetentionDays")) || 30);
+
+  // Reporting & Export Schedules states
+  const [enableScheduledReports, setEnableScheduledReports] = useState(() => localStorage.getItem("enableScheduledReports") === "true");
+  const [reportFrequency, setReportFrequency] = useState(() => localStorage.getItem("reportFrequency") || "weekly");
 
   // Account management
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  // Handle profile picture upload
+  // --- Notification Contact Management Functions ---
+
+  const handleAddEmail = () => {
+    if (newNotificationEmail && !notificationEmails.includes(newNotificationEmail)) {
+      setNotificationEmails([...notificationEmails, newNotificationEmail]);
+      setNewNotificationEmail(""); // Clear input after adding
+    }
+  };
+
+  const handleRemoveEmail = (emailToRemove) => {
+    setNotificationEmails(notificationEmails.filter(email => email !== emailToRemove));
+  };
+
+  const handleAddPhone = () => {
+    if (newNotificationPhone && !notificationPhones.includes(newNotificationPhone)) {
+      setNotificationPhones([...notificationPhones, newNotificationPhone]);
+      setNewNotificationPhone(""); // Clear input after adding
+    }
+  };
+
+  const handleRemovePhone = (phoneToRemove) => {
+    setNotificationPhones(notificationPhones.filter(phone => phone !== phoneToRemove));
+  };
+
+  // --- Send Test Notifications ---
+
+  const handleSendTestEmail = () => {
+    if (notificationEmails.length > 0) {
+      alert(`Simulated: Test email sent to ${notificationEmails.join(', ')}! Please check your inbox.`);
+      console.log(`Sending test email to: ${notificationEmails.join(', ')}`);
+      // In a real app, you would make an API call here to send the test email
+    } else {
+      alert("Please add at least one email address to send a test notification.");
+    }
+  };
+
+  const handleSendTestSMS = () => {
+    if (notificationPhones.length > 0) {
+      alert(`Simulated: Test SMS sent to ${notificationPhones.join(', ')}! Please check your phone.`);
+      console.log(`Sending test SMS to: ${notificationPhones.join(', ')}`);
+      // In a real app, you would make an API call here to send the test SMS
+    } else {
+      alert("Please add at least one phone number to send a test notification.");
+    }
+  };
+
+  // --- Existing Functions ---
+
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -39,19 +121,17 @@ export default function Settings() {
     }
   };
 
-  // Export data (CSV/PDF)
   const handleExportData = (format) => {
     console.log(`Exporting data as ${format}...`);
+    alert(`Exporting data as ${format}! (Simulated action)`);
   };
 
-  // Logout
   const handleLogout = () => {
     localStorage.clear();
     sessionStorage.clear();
     navigate("/login");
   };
 
-  // Delete account (simulated)
   const handleDeleteAccount = () => {
     if (!confirmDelete) {
       setConfirmDelete(true);
@@ -60,49 +140,49 @@ export default function Settings() {
       localStorage.clear();
       sessionStorage.clear();
       console.log("Account deleted! (functionality not implemented)");
+      alert("Account deleted!");
       navigate("/login");
     }
   };
 
-  const settingsCards = [
-    {
-      id: 'profile',
-      title: 'User Profile',
-      icon: <FaUser />,
-      content: (
-        <div style={{ textAlign: "center" }}>
-          <div style={{ marginBottom: "2rem" }}>
-            <label htmlFor="profilePicInput" style={{ cursor: "pointer" }}>
+  const handleSaveChanges = () => {
+    localStorage.setItem("emailAlerts", emailAlerts);
+    localStorage.setItem("smsPushNotifications", smsPushNotifications);
+    // Store arrays as JSON strings
+    localStorage.setItem("notificationEmails", JSON.stringify(notificationEmails));
+    localStorage.setItem("notificationPhones", JSON.stringify(notificationPhones));
+
+    localStorage.setItem("temperatureUnit", temperatureUnit);
+    localStorage.setItem("vibrationUnit", vibrationUnit);
+    localStorage.setItem("tempThreshold", tempThreshold);
+    localStorage.setItem("vibrationThreshold", vibrationThreshold);
+    localStorage.setItem("calibrationValue", calibrationValue);
+    localStorage.setItem("dataRetentionDays", dataRetentionDays);
+
+    localStorage.setItem("enableScheduledReports", enableScheduledReports);
+    localStorage.setItem("reportFrequency", reportFrequency);
+
+    alert("Settings saved!");
+  };
+
+  return (
+    <div className="settings-page">
+      <header className="settings-header">
+        <h1><FaCogs className="header-icon" /> Settings</h1>
+      </header>
+
+      <main className="settings-main-content">
+        {/* User Profile Card */}
+        <section className="settings-card profile-section">
+          <h2><FaUserCircle className="section-icon" /> User Profile</h2>
+          <div className="profile-pic-area">
+            <label htmlFor="profilePicInput" className="profile-pic-label">
               {profilePic ? (
-                <img
-                  src={profilePic}
-                  alt="Profile"
-                  style={{
-                    width: 120,
-                    height: 120,
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    border: "4px solid #3b82f6",
-                    boxShadow: "0 8px 32px rgba(59, 130, 246, 0.2)",
-                    transition: "all 0.3s ease",
-                  }}
-                />
+                <img src={profilePic} alt="Profile" className="profile-pic-img" />
               ) : (
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 120,
-                    height: 120,
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-                    border: "3px dashed rgba(59, 130, 246, 0.4)",
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  <FaCamera style={{ fontSize: "2.5rem", color: "#ffffff" }} />
-                </div>
+                <span className="profile-pic-placeholder">
+                  <FaCamera className="camera-icon" />
+                </span>
               )}
             </label>
             <input
@@ -113,533 +193,262 @@ export default function Settings() {
               style={{ display: "none" }}
             />
           </div>
-          <div style={{ 
-            fontSize: "1.1rem", 
-            color: "var(--secondary-text-color)",
-            background: "rgba(59, 130, 246, 0.1)",
-            padding: "1rem",
-            borderRadius: "12px",
-            border: "1px solid rgba(59, 130, 246, 0.2)"
-          }}>
-            <span>Logged in as</span>
-            <br />
-            <strong style={{ color: "var(--text-color)", fontSize: "1.2rem" }}>
-              {localStorage.getItem("userEmail") || "User"}
-            </strong>
+          <p className="user-email-display">Logged in as: <strong>{localStorage.getItem("userEmail") || "user@example.com"}</strong></p>
+        </section>
+
+        {/* Notification Preferences */}
+        <section className="settings-card notifications-section">
+          <h2><FaBell className="section-icon" /> Notification Preferences</h2>
+
+          {/* Email Alerts */}
+          <div className="setting-item switch-container">
+            <label htmlFor="emailAlertsToggle" className="settings-label switch-label">
+              Enable Email Alerts
+            </label>
+            <label className="toggle-switch">
+              <input
+                type="checkbox"
+                id="emailAlertsToggle"
+                checked={emailAlerts}
+                onChange={() => setEmailAlerts(!emailAlerts)}
+              />
+              <span className="slider round"></span>
+            </label>
           </div>
-        </div>
-      )
-    },
-    {
-      id: 'notifications',
-      title: 'Notification Preferences',
-      icon: <FaBell />,
-      content: (
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          <label style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: "1rem",
-            padding: "1rem",
-            borderRadius: "12px",
-            background: emailAlerts ? "rgba(34, 197, 94, 0.1)" : "rgba(156, 163, 175, 0.1)",
-            border: `2px solid ${emailAlerts ? "rgba(34, 197, 94, 0.3)" : "rgba(156, 163, 175, 0.2)"}`,
-            cursor: "pointer",
-            transition: "all 0.3s ease"
-          }}>
-            <input
-              type="checkbox"
-              checked={emailAlerts}
-              onChange={() => setEmailAlerts(!emailAlerts)}
-              style={{ 
-                width: "20px", 
-                height: "20px", 
-                accentColor: "#22c55e",
-                cursor: "pointer"
-              }}
-            />
-            <div>
-              <div style={{ fontWeight: "600", marginBottom: "0.25rem" }}>Email Alerts</div>
-              <div style={{ fontSize: "0.9rem", color: "var(--secondary-text-color)" }}>
-                Receive notifications for faults and warnings
-              </div>
+          <div className="setting-item email-list-control">
+            <label className="settings-label">
+              <FaEnvelope className="input-icon" /> Notification Email:
+            </label>
+            <div className="input-and-add-container">
+              <button className="add-button" onClick={handleAddEmail} type="button" title="Add Email">
+                ADD
+              </button>
+              <input
+                className="settings-input"
+                type="email"
+                value={newNotificationEmail}
+                onChange={(e) => setNewNotificationEmail(e.target.value)}
+                placeholder="e.g., your_email@example.com"
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddEmail(); } }}
+              />
             </div>
-          </label>
-          
-          <label style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: "1rem",
-            padding: "1rem",
-            borderRadius: "12px",
-            background: smsPushNotifications ? "rgba(34, 197, 94, 0.1)" : "rgba(156, 163, 175, 0.1)",
-            border: `2px solid ${smsPushNotifications ? "rgba(34, 197, 94, 0.3)" : "rgba(156, 163, 175, 0.2)"}`,
-            cursor: "pointer",
-            transition: "all 0.3s ease"
-          }}>
-            <input
-              type="checkbox"
-              checked={smsPushNotifications}
-              onChange={() => setSmsPushNotifications(!smsPushNotifications)}
-              style={{ 
-                width: "20px", 
-                height: "20px", 
-                accentColor: "#22c55e",
-                cursor: "pointer"
-              }}
-            />
-            <div>
-              <div style={{ fontWeight: "600", marginBottom: "0.25rem" }}>SMS & Push Notifications</div>
-              <div style={{ fontSize: "0.9rem", color: "var(--secondary-text-color)" }}>
-                Get instant mobile notifications
-              </div>
-            </div>
-          </label>
-        </div>
-      )
-    },
-    {
-      id: 'display',
-      title: 'Display Preferences',
-      icon: <FaEye />,
-      content: (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
-          <div>
-            <label style={{ 
-              display: "block", 
-              fontWeight: "600", 
-              marginBottom: "0.75rem",
-              color: "var(--text-color)"
-            }}>
-              Temperature Unit
-            </label>
-            <select
-              value={temperatureUnit}
-              onChange={(e) => setTemperatureUnit(e.target.value)}
-              style={{ 
-                width: "100%",
-                padding: "0.75rem 1rem", 
-                borderRadius: "12px", 
-                border: "2px solid rgba(59, 130, 246, 0.2)",
-                background: "rgba(59, 130, 246, 0.05)",
-                fontSize: "1rem",
-                fontWeight: "500",
-                cursor: "pointer",
-                transition: "all 0.3s ease"
-              }}
-            >
-              <option value="°C">Celsius (°C)</option>
-              <option value="°F">Fahrenheit (°F)</option>
-            </select>
-          </div>
-          
-          <div>
-            <label style={{ 
-              display: "block", 
-              fontWeight: "600", 
-              marginBottom: "0.75rem",
-              color: "var(--text-color)"
-            }}>
-              Vibration Unit
-            </label>
-            <select
-              value={vibrationUnit}
-              onChange={(e) => setVibrationUnit(e.target.value)}
-              style={{ 
-                width: "100%",
-                padding: "0.75rem 1rem", 
-                borderRadius: "12px", 
-                border: "2px solid rgba(59, 130, 246, 0.2)",
-                background: "rgba(59, 130, 246, 0.05)",
-                fontSize: "1rem",
-                fontWeight: "500",
-                cursor: "pointer",
-                transition: "all 0.3s ease"
-              }}
-            >
-              <option value="m/s²">m/s²</option>
-              <option value="g">g</option>
-            </select>
-          </div>
-        </div>
-      )
-    },
-    {
-      id: 'sensors',
-      title: 'Sensor & Device Settings',
-      icon: <FaCog />,
-      content: (
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          <div>
-            <label style={{ 
-              display: "block", 
-              fontWeight: "600", 
-              marginBottom: "0.75rem",
-              color: "var(--text-color)"
-            }}>
-              Temperature Alert Threshold ({temperatureUnit})
-            </label>
-            <input
-              type="number"
-              value={tempThreshold}
-              onChange={(e) => setTempThreshold(Number(e.target.value))}
-              min={-50}
-              max={150}
-              style={{ 
-                width: "100%",
-                padding: "0.75rem 1rem", 
-                borderRadius: "12px", 
-                border: "2px solid rgba(59, 130, 246, 0.2)",
-                background: "rgba(59, 130, 246, 0.05)",
-                fontSize: "1rem",
-                transition: "all 0.3s ease"
-              }}
-            />
-          </div>
-          
-          <div>
-            <label style={{ 
-              display: "block", 
-              fontWeight: "600", 
-              marginBottom: "0.75rem",
-              color: "var(--text-color)"
-            }}>
-              Vibration Alert Threshold ({vibrationUnit})
-            </label>
-            <input
-              type="number"
-              value={vibrationThreshold}
-              onChange={(e) => setVibrationThreshold(Number(e.target.value))}
-              min={0}
-              max={100}
-              style={{ 
-                width: "100%",
-                padding: "0.75rem 1rem", 
-                borderRadius: "12px", 
-                border: "2px solid rgba(59, 130, 246, 0.2)",
-                background: "rgba(59, 130, 246, 0.05)",
-                fontSize: "1rem",
-                transition: "all 0.3s ease"
-              }}
-            />
-          </div>
-          
-          <div>
-            <label style={{ 
-              display: "block", 
-              fontWeight: "600", 
-              marginBottom: "0.75rem",
-              color: "var(--text-color)"
-            }}>
-              Calibration Value
-            </label>
-            <input
-              type="number"
-              value={calibrationValue}
-              onChange={(e) => setCalibrationValue(Number(e.target.value))}
-              min={-100}
-              max={100}
-              style={{ 
-                width: "100%",
-                padding: "0.75rem 1rem", 
-                borderRadius: "12px", 
-                border: "2px solid rgba(59, 130, 246, 0.2)",
-                background: "rgba(59, 130, 246, 0.05)",
-                fontSize: "1rem",
-                transition: "all 0.3s ease"
-              }}
-            />
-          </div>
-        </div>
-      )
-    },
-    {
-      id: 'data',
-      title: 'Data Management',
-      icon: <FaDatabase />,
-      content: (
-        <div>
-          <div style={{ marginBottom: "2rem" }}>
-            <label style={{ 
-              display: "block", 
-              fontWeight: "600", 
-              marginBottom: "0.75rem",
-              color: "var(--text-color)"
-            }}>
-              Data Retention Period (Months)
-            </label>
-            <input
-              type="number"
-              value={dataRetentionDays}
-              onChange={(e) => setDataRetentionDays(Number(e.target.value))}
-              min={1}
-              max={120}
-              style={{ 
-                width: "100%",
-                padding: "0.75rem 1rem", 
-                borderRadius: "12px", 
-                border: "2px solid rgba(59, 130, 246, 0.2)",
-                background: "rgba(59, 130, 246, 0.05)",
-                fontSize: "1rem",
-                transition: "all 0.3s ease"
-              }}
-            />
-          </div>
-          
-          <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "1fr 1fr", 
-            gap: "1rem",
-            padding: "1.5rem",
-            background: "rgba(59, 130, 246, 0.05)",
-            borderRadius: "16px",
-            border: "1px solid rgba(59, 130, 246, 0.1)"
-          }}>
-            <button
-              onClick={() => handleExportData("CSV")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "0.75rem",
-                background: "linear-gradient(135deg, #22c55e, #16a34a)",
-                color: "#fff",
-                border: "none",
-                borderRadius: "12px",
-                padding: "1rem 1.5rem",
-                fontWeight: "600",
-                fontSize: "1rem",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                boxShadow: "0 4px 12px rgba(34, 197, 94, 0.3)"
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 8px 25px rgba(34, 197, 94, 0.4)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = "0 4px 12px rgba(34, 197, 94, 0.3)";
-              }}
-            >
-              <FaFileCsv size={18} /> Export CSV
-            </button>
-            
-            <button
-              onClick={() => handleExportData("PDF")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "0.75rem",
-                background: "linear-gradient(135deg, #ef4444, #dc2626)",
-                color: "#fff",
-                border: "none",
-                borderRadius: "12px",
-                padding: "1rem 1.5rem",
-                fontWeight: "600",
-                fontSize: "1rem",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                boxShadow: "0 4px 12px rgba(239, 68, 68, 0.3)"
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 8px 25px rgba(239, 68, 68, 0.4)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = "0 4px 12px rgba(239, 68, 68, 0.3)";
-              }}
-            >
-              <FaFilePdf size={18} /> Export PDF
+            <ul className="contact-list">
+              {notificationEmails.map((email, index) => (
+                <li key={index}>
+                  {email}
+                  <button onClick={() => handleRemoveEmail(email)} className="remove-button" type="button" title="Remove Email">
+                    <FaMinusCircle />
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button className="settings-button secondary-button test-notification-button" onClick={handleSendTestEmail} type="button">
+              <FaPaperPlane /> Send Test Email
             </button>
           </div>
-        </div>
-      )
-    },
-    {
-      id: 'account',
-      title: 'Account Management',
-      icon: <FaLock />,
-      content: (
-        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          <button
-            onClick={handleLogout}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.75rem",
-              margin: "0 auto",
-              background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "12px",
-              padding: "1rem 2rem",
-              fontWeight: "600",
-              fontSize: "1rem",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)"
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = "translateY(-2px)";
-              e.target.style.boxShadow = "0 8px 25px rgba(59, 130, 246, 0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.3)";
-            }}
-          >
-            <FaSignOutAlt size={18} /> Log Out
-          </button>
-          
-          <button
-            onClick={handleDeleteAccount}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.75rem",
-              margin: "0 auto",
-              background: confirmDelete ? "linear-gradient(135deg, #ef4444, #dc2626)" : "linear-gradient(135deg, #6b7280, #4b5563)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "12px",
-              padding: "1rem 2rem",
-              fontWeight: "600",
-              fontSize: "1rem",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-              boxShadow: confirmDelete ? "0 4px 12px rgba(239, 68, 68, 0.3)" : "0 4px 12px rgba(107, 114, 128, 0.3)"
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = "translateY(-2px)";
-              e.target.style.boxShadow = confirmDelete ? "0 8px 25px rgba(239, 68, 68, 0.4)" : "0 8px 25px rgba(107, 114, 128, 0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = confirmDelete ? "0 4px 12px rgba(239, 68, 68, 0.3)" : "0 4px 12px rgba(107, 114, 128, 0.3)";
-            }}
-          >
-            <FaTrashAlt size={18} />
-            {confirmDelete ? "Click again to Confirm Delete" : "Delete Account"}
-          </button>
-        </div>
-      )
-    }
-  ];
 
-  return (
-    <div style={{ 
-      minHeight: "100vh",
-      background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-      padding: "2rem"
-    }}>
-      {/* Hero Header */}
-      <div style={{
-        textAlign: "center",
-        marginBottom: "3rem",
-        padding: "2rem",
-        background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-        borderRadius: "24px",
-        color: "white",
-        boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)"
-      }}>
-        <h1 style={{ 
-          fontSize: "3rem", 
-          fontWeight: "800", 
-          marginBottom: "0.5rem",
-          background: "linear-gradient(135deg, #ffffff, #e2e8f0)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text"
-        }}>
-          Settings
-        </h1>
-        <p style={{ 
-          fontSize: "1.2rem", 
-          opacity: 0.9, 
-          fontWeight: "400",
-          maxWidth: "600px",
-          margin: "0 auto"
-        }}>
-          Customize your experience and manage your account preferences
-        </p>
-      </div>
-
-      {/* Settings Grid */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-        gap: "2rem",
-        maxWidth: "1400px",
-        margin: "0 auto"
-      }}>
-        {settingsCards.map((card) => (
-          <div
-            key={card.id}
-            style={{
-              background: "rgba(255, 255, 255, 0.9)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              borderRadius: "20px",
-              padding: "2rem",
-              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-              transition: "all 0.3s ease",
-              position: "relative",
-              overflow: "hidden"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.1)";
-            }}
-          >
-            {/* Card Header */}
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              marginBottom: "2rem",
-              paddingBottom: "1rem",
-              borderBottom: "2px solid rgba(59, 130, 246, 0.1)"
-            }}>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "48px",
-                height: "48px",
-                background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-                borderRadius: "12px",
-                color: "white",
-                fontSize: "1.5rem"
-              }}>
-                {card.icon}
-              </div>
-              <h2 style={{ 
-                fontSize: "1.5rem", 
-                fontWeight: "700", 
-                color: "var(--text-color)",
-                margin: 0
-              }}>
-                {card.title}
-              </h2>
-            </div>
-
-            {/* Card Content */}
-            <div>
-              {card.content}
-            </div>
+          {/* SMS/Push Notifications */}
+          <div className="setting-item switch-container">
+            <label htmlFor="smsPushNotificationsToggle" className="settings-label switch-label">
+              Enable SMS / Push Notifications
+            </label>
+            <label className="toggle-switch">
+              <input
+                type="checkbox"
+                id="smsPushNotificationsToggle"
+                checked={smsPushNotifications}
+                onChange={() => setSmsPushNotifications(!smsPushNotifications)}
+              />
+              <span className="slider round"></span>
+            </label>
           </div>
-        ))}
-      </div>
+          <div className="setting-item phone-list-control">
+            <label className="settings-label">
+              <FaPhoneAlt className="input-icon" /> Notification Phone:
+            </label>
+            <div className="input-and-add-container">
+              <button className="add-button" onClick={handleAddPhone} type="button" title="Add Phone">
+                ADD
+              </button>
+              <input
+                className="settings-input"
+                type="tel"
+                value={newNotificationPhone}
+                onChange={(e) => setNewNotificationPhone(e.target.value)}
+                placeholder="e.g., +15551234567"
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddPhone(); } }}
+              />
+            </div>
+            <ul className="contact-list">
+              {notificationPhones.map((phone, index) => (
+                <li key={index}>
+                  {phone}
+                  <button onClick={() => handleRemovePhone(phone)} className="remove-button" type="button" title="Remove Phone">
+                    <FaMinusCircle />
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button className="settings-button secondary-button test-notification-button" onClick={handleSendTestSMS} type="button">
+              <FaPaperPlane /> Send Test SMS
+            </button>
+          </div>
+        </section>
+
+        {/* Reporting & Export Schedules */}
+        <section className="settings-card reporting-schedules-section">
+          <h2><FaCalendarAlt className="section-icon" /> Reporting & Export Schedules</h2>
+          <div className="setting-item switch-container">
+            <label htmlFor="enableScheduledReportsToggle" className="settings-label switch-label">
+              Enable Scheduled Reports
+            </label>
+            <label className="toggle-switch">
+              <input
+                type="checkbox"
+                id="enableScheduledReportsToggle"
+                checked={enableScheduledReports}
+                onChange={() => setEnableScheduledReports(!enableScheduledReports)}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+          <div className="setting-item">
+            <label className="settings-label">
+              Report Frequency:
+              <select
+                className="settings-input"
+                value={reportFrequency}
+                onChange={(e) => setReportFrequency(e.target.value)}
+                disabled={!enableScheduledReports}
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        {/* Sensor/Device Settings */}
+        <section className="settings-card sensor-device-section">
+          <h2><FaThermometerHalf className="section-icon" /> Sensor/Device Settings</h2>
+          <div className="setting-item">
+            <label className="settings-label">
+              Temperature Unit:
+              <select
+                className="settings-input"
+                value={temperatureUnit}
+                onChange={(e) => setTemperatureUnit(e.target.value)}
+              >
+                <option value="°C">°C</option>
+                <option value="°F">°F</option>
+              </select>
+            </label>
+          </div>
+          <div className="setting-item">
+            <label className="settings-label">
+              Vibration Unit:
+              <select
+                className="settings-input"
+                value={vibrationUnit}
+                onChange={(e) => setVibrationUnit(e.target.value)}
+              >
+                <option value="m/s²">m/s²</option>
+                <option value="g">g</option>
+              </select>
+            </label>
+          </div>
+          <div className="setting-item">
+            <label className="settings-label">
+              Temperature Alert Threshold ({temperatureUnit}):
+              <input
+                className="settings-input"
+                type="number"
+                value={tempThreshold}
+                onChange={(e) => setTempThreshold(Number(e.target.value))}
+                min={-50}
+                max={150}
+              />
+            </label>
+          </div>
+          <div className="setting-item">
+            <label className="settings-label">
+              Vibration Alert Threshold ({vibrationUnit}):
+              <input
+                className="settings-input"
+                type="number"
+                value={vibrationThreshold}
+                onChange={(e) => setVibrationThreshold(Number(e.target.value))}
+                min={0}
+                max={100}
+              />
+            </label>
+          </div>
+          <div className="setting-item">
+            <label className="settings-label">
+              Calibration Value:
+              <input
+                className="settings-input"
+                type="number"
+                value={calibrationValue}
+                onChange={(e) => setCalibrationValue(Number(e.target.value))}
+                min={-100}
+                max={100}
+              />
+            </label>
+          </div>
+        </section>
+
+        {/* Data Settings */}
+        <section className="settings-card data-settings-section">
+          <h2><FaDatabase className="section-icon" /> Data Settings</h2>
+          <div className="setting-item">
+            <label className="settings-label">
+              Data Retention Period (Months):
+              <input
+                className="settings-input"
+                type="number"
+                value={dataRetentionDays}
+                onChange={(e) => setDataRetentionDays(Number(e.target.value))}
+                min={1}
+                max={120}
+              />
+            </label>
+          </div>
+          <div className="data-export-buttons">
+            <button className="settings-button primary-button" onClick={() => handleExportData("CSV")} type="button" title="Export as CSV">
+              <FaFileCsv /> Export CSV
+            </button>
+            <button className="settings-button secondary-button" onClick={() => handleExportData("PDF")} type="button" title="Export as PDF">
+              <FaFilePdf /> Export PDF
+            </button>
+          </div>
+        </section>
+
+        {/* Account Management Card */}
+        <section className="settings-card account-management-section">
+          <h2>Account Actions</h2>
+          <div className="account-buttons">
+            <button className="settings-button primary-button" onClick={handleLogout} type="button">
+              <FaSignOutAlt /> Log Out
+            </button>
+            <button
+              className={`settings-button delete-button ${confirmDelete ? "confirm-active" : ""}`}
+              onClick={handleDeleteAccount}
+              type="button"
+            >
+              {confirmDelete ? "Click again to Confirm" : <><FaTrashAlt /> Delete Account</>}
+            </button>
+          </div>
+        </section>
+
+        {/* Save Changes Button */}
+        <section className="settings-card save-changes-section">
+          <button className="settings-button primary-button large-button" onClick={handleSaveChanges} type="button">
+            <FaSave /> Save Changes
+          </button>
+        </section>
+      </main>
     </div>
   );
 }

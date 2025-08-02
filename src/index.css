@@ -8,6 +8,7 @@
   --text-color: #212121;
   --secondary-text-color: #555555;
   --link-color: #007bff;
+  --button-text-color: #000;
 
   /* --- Sidebar & UI Elements --- */
   --sidebar-bg-color: #e8e8e8;
@@ -34,16 +35,41 @@
   --status-disconnected: #757575;
 }
 
-/* Dark Mode Overrides - only active inside .layout-container.dark-mode */
+/* Light Mode - Explicit light theme */
+.layout-container.light-mode {
+  --primary-bg-color: #ffffff;
+  --secondary-bg-color: #f2f2f2;
+  --text-color: #000000;
+  --button-text-color: #000000;
+  --secondary-text-color: #444343;
+  --link-color: #007bff;
+   --add-button: #007bff;
+  --sidebar-bg-color: #e8e8e8;
+  --sidebar-text-color: #333333;
+  --border-color: #b0b0b0;
+  --input-bg-color: #fbfbfb;
+  --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+
+  --button-bg-color: hsl(214, 84%, 52%);
+  --button-text-color: #000000;
+  --button-border-color: #61dafb;
+  --button-hover-bg-color: #168fb4;
+
+  --accent-button-bg-color: #4fd7fd;
+  --accent-button-text-color: #202633;
+  --accent-button-hover-bg-color: #037fa5;
+}
+
+/* Dark Mode Overrides */
 .layout-container.dark-mode {
   --primary-bg-color: #1a1a1a;
   --secondary-bg-color: #2c2c2c;
-  --text-color: #e0e0e0;
+  --text-color: #ffffff;
   --secondary-text-color: #b0b0b0;
   --link-color: #90caf9;
 
   --sidebar-bg-color: #212121;
-  --sidebar-text-color: #e0e0e0;
+  --sidebar-text-color: #ffffff;
   --border-color: #505050;
   --input-bg-color: #333333;
   --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
@@ -56,6 +82,30 @@
   --accent-button-bg-color: #61dafb;
   --accent-button-text-color: #21252e;
   --accent-button-hover-bg-color: #21a1f1;
+}
+
+/* Blue Mode - Darker, more accessible blue theme */
+.layout-container.blue-mode {
+  --primary-bg-color: #0f172a;
+  --secondary-bg-color: #1e293b;
+  --text-color: #f1f5f9;
+  --secondary-text-color: #94a3b8;
+  --link-color: #60a5fa;
+
+  --sidebar-bg-color: #0f172a;
+  --sidebar-text-color: #f1f5f9;
+  --border-color: #334155;
+  --input-bg-color: #1e293b;
+  --card-shadow: 0 4px 15px rgba(15, 23, 42, 0.4);
+
+  --button-bg-color: #3b82f6;
+  --button-text-color: #ffffff;
+  --button-border-color: #60a5fa;
+  --button-hover-bg-color: #2563eb;
+
+  --accent-button-bg-color: #60a5fa;
+  --accent-button-text-color: #ffffff;
+  --accent-button-hover-bg-color: #3b82f6;
 }
 
 /* Base styles using the CSS variables */

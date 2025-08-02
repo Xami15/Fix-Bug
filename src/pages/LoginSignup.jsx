@@ -18,7 +18,8 @@ export default function LoginSignup() {
     minHeight: "480px",
     overflow: "hidden",
     borderRadius: "10px",
-    background: "#fff",
+    // This is the updated line to make the background transparent
+    background: "transparent",
     boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)",
     transition: "all 0.4s ease",
     zIndex: 2,
@@ -46,16 +47,47 @@ export default function LoginSignup() {
       style={{
         height: "100vh",
         width: "100%",
-        backgroundImage: "url('/background.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         position: "relative",
       }}
     >
+      {/* Animated Engine Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+        onError={(e) => {
+          console.error("Video loading error:", e);
+          // Fallback to background image if video fails
+          e.target.style.display = "none";
+        }}
+      >
+        <source src="/engine-animation.mp4" type="video/mp4" />
+        <source src="engine-animation.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      
+      {/* Fallback background image */}
+      <div
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          zIndex: -1,
+        }}
+      />
+
       {/* Dark overlay */}
       <div
         style={{
@@ -64,7 +96,7 @@ export default function LoginSignup() {
           left: 0,
           height: "100%",
           width: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.5)", // darkness level
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
           zIndex: 1,
         }}
       ></div>

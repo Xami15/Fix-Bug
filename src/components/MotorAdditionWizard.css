@@ -1,0 +1,247 @@
+/* Motor Addition Wizard Styles */
+.motor-wizard-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.motor-wizard-modal {
+  background-color: var(--secondary-bg-color);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.motor-wizard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.motor-wizard-header h2 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.wizard-close-button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.wizard-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.motor-wizard-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.motor-wizard-progress::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--border-color);
+  z-index: 1;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.progress-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active .progress-number {
+  background-color: var(--button-bg-color);
+  color: white;
+}
+
+.progress-step.completed .progress-number {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.progress-label {
+  font-size: 0.875rem;
+  color: var(--text-color);
+  text-align: center;
+  opacity: 0.7;
+}
+
+.progress-step.active .progress-label,
+.progress-step.completed .progress-label {
+  opacity: 1;
+  font-weight: 500;
+}
+
+.motor-wizard-content {
+  margin-bottom: 2rem;
+}
+
+.motor-wizard-content h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-color);
+  font-size: 1.25rem;
+}
+
+.step-description {
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.wizard-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wizard-input {
+  padding: 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background-color: var(--primary-bg-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.wizard-input:focus {
+  border-color: var(--button-bg-color);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+}
+
+.wizard-input.error {
+  border-color: var(--danger-color);
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.3);
+}
+
+.wizard-error-message {
+  color: var(--danger-color);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.motor-wizard-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.wizard-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wizard-button.primary {
+  background-color: var(--button-bg-color);
+  color: white;
+}
+
+.wizard-button.primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.wizard-button.secondary {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+.wizard-button.secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .motor-wizard-modal {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .motor-wizard-progress {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .motor-wizard-progress::before {
+    display: none;
+  }
+  
+  .progress-step {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  
+  .motor-wizard-actions {
+    flex-direction: column;
+  }
+  
+  .wizard-button {
+    width: 100%;
+  }
+} 

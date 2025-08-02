@@ -1,127 +1,382 @@
 /* src/pages/Settings.css */
 
-/* Base Page Styles */
+/* Main container */
 .settings-page {
+  padding: 30px;
   font-family: 'Segoe UI', sans-serif;
   min-height: 100vh;
-  padding: 2rem;
-  /* Transition can remain, but it won't be used for theme switching */
-  transition: background-color 0.3s ease, color 0.3s ease;
-  background-color: var(--primary-bg-color); /* Will now consistently be light theme color */
-  color: var(--text-color); /* Will now consistently be light theme color */
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
-.settings-page h1,
-.settings-page h2 {
-  color: var(--text-color); /* Will now consistently be light theme color */
-}
-
-/* Header */
 .settings-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+}
+
+.settings-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.settings-card {
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--card-shadow);
+}
+
+.settings-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 15px;
+}
+
+.setting-item {
+  margin-bottom: 15px;
+}
+
+.settings-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.settings-input {
+  width: 300px;
+  max-width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.switch-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 15px;
 }
 
-/* Main Content Grid */
-.settings-main {
-  display: grid;
-  gap: 1.5rem;
-  /* You might want to define grid columns for larger screens here */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+.switch-label {
+  flex-grow: 1;
+  margin-right: 15px;
 }
 
-/* Card Styles */
-.settings-card {
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: var(--card-shadow); /* Uses global light theme card shadow */
-  /* Transition can remain, but it won't be used for theme switching */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: var(--secondary-bg-color); /* Will now consistently be light theme color */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
 }
 
-/* Removed: Theme-specific card background blocks (body.theme-light, body.theme-dark)
-   The 'settings-card' now directly uses '--secondary-bg-color' which is defined
-   in :root (index.css) as the light theme color.
-*/
-
-/* Label Styles */
-.settings-label {
-  display: block;
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
-  color: var(--text-color); /* Will now consistently be light theme color */
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-/* Input Styles */
-.settings-input {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.25rem;
-  border-radius: 4px;
-  border: 1px solid var(--border-color); /* Will now consistently be light theme color */
-  color: var(--text-color); /* Will now consistently be light theme color */
-  /* Transition can remain, but it won't be used for theme switching */
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-  background-color: var(--input-bg-color); /* Will now consistently be light theme color */
-}
-
-/* Removed: Theme-specific input background blocks (body.theme-light, body.theme-dark)
-   The 'settings-input' now directly uses '--input-bg-color' which is defined
-   in :root (index.css) as the light theme color.
-*/
-
-/* Checkbox Styles */
-.settings-checkbox {
-  margin-right: 0.5rem;
-  /* You might want to style the actual checkbox appearance here as well */
-}
-
-/* Button Styles (common) */
-.settings-button {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  margin-right: 0.5rem;
+.slider {
+  position: absolute;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  border: 1px solid var(--button-border-color); /* Uses global light theme button border */
-  background-color: var(--button-bg-color); /* Uses global light theme button background */
-  color: var(--button-text-color); /* Uses global light theme button text color */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: 0.3s;
+  border-radius: 24px;
 }
 
-.settings-button:hover {
-  background-color: var(--button-hover-bg-color); /* Uses global light theme button hover background */
-}
-
-/* Confirm Delete Button Specific Styles */
-.settings-confirm-button {
-  background-color: #e53935; /* Specific red for delete */
-  color: white; /* White text for delete button */
-  border-color: #e53935; /* Specific border color for delete */
-}
-
-.settings-confirm-button:hover {
-  background-color: #c62828; /* Darker red on hover */
-}
-
-/* Opacity for confirm delete state */
-.settings-confirm-button:not(.confirm-active) {
-  opacity: 0.7;
-}
-
-.settings-confirm-button.confirm-active {
-  opacity: 1;
-}
-
-
-/* Profile Picture Styles */
-.profile-pic-img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  margin-top: 1rem;
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
   border-radius: 50%;
-  border: 2px solid var(--border-color); /* Uses global light theme border color */
+}
+
+input:checked + .slider {
+  background-color: var(--link-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.settings-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.settings-button.primary-button {
+  background-color: var(--primary-color);
+  color: var(--link-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.settings-button.primary-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.settings-button.secondary-button {
+  background-color: var(--secondary-color);
+  color: var(--link-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.settings-button.secondary-button:hover {
+  background-color: var(--secondary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.settings-button.delete-button {
+  background-color: var(--danger-color);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.settings-button.delete-button:hover {
+  background-color: var(--danger-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.settings-button.large-button {
+  padding: 16px 32px;
+  font-size: 16px;
+  min-width: 200px;
+}
+
+.profile-section {
+  text-align: center;
+}
+
+.profile-pic-area {
+  margin-bottom: 20px;
+}
+
+.profile-pic-label {
+  cursor: pointer;
+  display: inline-block;
+  border: 3px solid var(--primary-color);
+  border-radius: 50%;
+  padding: 5px;
+  transition: border-color 0.3s;
+}
+
+.profile-pic-label:hover {
+  border-color: var(--primary-hover);
+}
+
+.profile-pic-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.profile-pic-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--input-bg-color);
+  border: 2px dashed var(--border-color);
+}
+
+.profile-pic-placeholder .camera-icon {
+  font-size: 3rem;
+  color: var(--primary-color);
+}
+
+.user-email-display {
+  font-size: 14px;
+  color: var(--secondary-text-color);
+  margin-top: 10px;
+}
+
+.data-export-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.data-export-buttons .settings-button {
+  min-width: 160px;
+}
+
+.account-management-section {
+  text-align: center;
+}
+
+.account-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+  align-items: center;
+}
+
+.account-buttons .settings-button {
+  width: 250px;
+  max-width: 100%;
+}
+
+.save-changes-section {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.save-changes-section .settings-button {
+  width: 250px;
+  max-width: 100%;
+}
+
+/* Input and Add Button Container */
+.input-and-add-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.add-button {
+  padding: 10px 16px;
+  background-color: var(--primary-color);
+  color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.add-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.contact-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.remove-button {
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.remove-button:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.test-notification-button {
+  margin-top: 10px;
+  width: 200px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .settings-page {
+    padding: 20px;
+  }
+  
+  .settings-header h1 {
+    font-size: 2rem;
+  }
+  
+  .settings-card {
+    padding: 15px;
+  }
+  
+  .settings-input {
+    width: 100%;
+  }
+  
+  .profile-pic-img,
+  .profile-pic-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .data-export-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .account-buttons .settings-button {
+    width: 100%;
+  }
+  
+  .save-changes-section .settings-button {
+    width: 100%;
+  }
+  
+  .input-and-add-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .add-button {
+    width: 100%;
+  }
 }

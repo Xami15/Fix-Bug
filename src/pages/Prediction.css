@@ -2,12 +2,11 @@
 
 /* Main container styles */
 .prediction-container {
-  padding: 20px;
-  background-color: var(--primary-bg-color); /* Uses global light theme primary background */
-  color: var(--text-color); /* Uses global light theme text color */
+  padding: 30px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   min-height: calc(100vh - 60px);
-  /* Transition can remain, but it won't be used for theme switching */
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 /* Header styles */
@@ -15,7 +14,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.prediction-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
 }
 
 /* Connection status badge */
@@ -31,6 +37,7 @@
 .connection-status-badge.connected {
   background-color: #28a745;
 }
+
 .connection-status-badge.disconnected {
   background-color: #dc3545;
 }
@@ -52,9 +59,11 @@
 .healthy-text {
   color: #28a745;
 }
+
 .warning-text {
   color: #ffc107;
 }
+
 .fault-text {
   color: #dc3545;
 }
@@ -76,19 +85,13 @@
 
 /* Prediction card base */
 .prediction-card {
-  padding: 20px;
-  border-radius: 10px;
-  /* Hardcoded light theme box-shadow and background-color */
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 10px; /* Use light theme shadow directly */
-  background-color: var(--secondary-bg-color); /* Uses global light theme secondary background */
-  color: var(--text-color); /* Uses global light theme text color */
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  background-color: var(--card-bg-color);
+  color: var(--text-color);
   transition: all 0.3s ease;
 }
-
-/* Removed: Theme-specific prediction card background/shadow */
-/* The styles for .prediction-card--healthy, .prediction-card--warning, .prediction-card--fault
-   that were in body.theme-light and body.theme-dark are now removed.
-   The base .prediction-card and inline styles in JSX handle colors. */
 
 /* Card headings */
 .prediction-card h2 {
@@ -103,13 +106,13 @@
 /* Paragraph text */
 .prediction-card p {
   margin: 5px 0;
-  color: var(--secondary-text-color); /* Uses global light theme secondary text color */
+  color: var(--secondary-text-color);
 }
 
 /* Last checked time */
 .last-checked-info {
   font-size: 0.85rem;
-  color: var(--secondary-text-color); /* Uses global light theme secondary text color */
+  color: var(--secondary-text-color);
   margin-top: 10px;
 }
 
@@ -119,11 +122,8 @@
   padding: 3px 8px;
   border-radius: 4px;
   font-size: 0.9rem;
-  /* Hardcoded light theme background for status badge */
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--border-color);
 }
-
-/* Removed: body.theme-light .status-badge and body.theme-dark .status-badge */
 
 /* Motor connection status inside card title */
 .motor-connection-status {
@@ -131,13 +131,14 @@
   margin-left: 10px;
   padding: 2px 6px;
   border-radius: 4px;
-  color: white; /* Fixed white text */
+  color: white;
   font-weight: normal;
 }
 
 .motor-connection-status.connected {
   background-color: #28a745;
 }
+
 .motor-connection-status.disconnected {
   background-color: #dc3545;
 }

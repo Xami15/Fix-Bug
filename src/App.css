@@ -2,6 +2,7 @@
   margin-left: 240px;
   padding: 2rem;
   transition: margin-left 0.3s ease;
+  min-height: 100vh;
 }
 
 .main-content.collapsed {

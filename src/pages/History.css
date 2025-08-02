@@ -2,34 +2,32 @@
 
 /* Main container */
 .history-container {
-  padding: 20px;
+  padding: 30px;
   font-family: 'Segoe UI', sans-serif;
   min-height: 100vh;
-  transition: all 0.3s ease;
-  position: relative;
-  background-color: var(--primary-bg-color);
+  background-color: var(--bg-color);
   color: var(--text-color);
-  animation: fadeIn 0.5s ease;
+  transition: all 0.3s ease;
 }
 
-/* Prediction History H1 */
 .history-container h1 {
   color: var(--text-color);
-  font-size: 28px;
-  margin-bottom: 16px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
 }
 
 /* Filter Section */
 .history-filter-section {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   align-items: center;
-  padding: 12px;
-  border-radius: 6px;
-  background-color: var(--secondary-bg-color);
-  border: 1px solid var(--border-color);
+  padding: 20px;
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
 }
 
 /* Input and Select elements in filter section */
@@ -39,7 +37,7 @@
   padding: 6px 10px;
   border-radius: 4px;
   border: 1px solid var(--border-color);
-  background-color: var(--primary-bg-color);
+  background-color: var(--input-bg-color);
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
@@ -51,11 +49,12 @@
   border: none;
   border-radius: 4px;
   color: white;
-  background-color: #007bff;
+  background-color: var(--primary-color);
   transition: background-color 0.3s;
 }
+
 .history-clear-button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-hover);
 }
 
 /* Summary counts */
@@ -77,8 +76,8 @@
 /* Table Header */
 .history-table-header {
   user-select: none;
-  background-color: var(--sidebar-bg-color);
-  color: var(--sidebar-text-color);
+  background-color: var(--secondary-bg-color);
+  color: var(--text-color);
 }
 
 .history-table-header th {
@@ -160,18 +159,6 @@
 .history-table-header th::after {
   content: "";
   margin-left: 6px;
-}
-
-/* Fade-in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Responsive tweaks */

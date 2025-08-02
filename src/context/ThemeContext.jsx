@@ -4,22 +4,35 @@ import { createContext, useState, useEffect } from 'react';
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('darkMode');
-    return savedMode ? JSON.parse(savedMode) : false;
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme || 'light'; // Default to light theme
   });
 
   useEffect(() => {
-    // No need to touch the <body> anymore
-    localStorage.setItem('darkMode', JSON.stringify(darkMode));
-  }, [darkMode]);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
-  const toggleDarkMode = () => {
-    setDarkMode(prev => !prev);
+  const cycleTheme = () => {
+    setTheme(prev => {
+      switch (prev) {
+        case 'light':
+          return 'dark';
+        case 'dark':
+          return 'blue';
+        case 'blue':
+          return 'light';
+        default:
+          return 'light';
+      }
+    });
   };
 
+  // For backward compatibility, provide darkMode boolean
+  const darkMode = theme === 'dark' || theme === 'blue';
+
   return (
-    <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
+    <ThemeContext.Provider value={{ theme, darkMode, cycleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

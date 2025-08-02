@@ -9,7 +9,7 @@ import { ThemeContext } from '../context/ThemeContext';
 export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [predictions, setPredictions] = useState([]);
-  const { darkMode } = useContext(ThemeContext);
+  const { theme, darkMode } = useContext(ThemeContext);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -39,8 +39,22 @@ export default function MainLayout() {
     return () => clearInterval(interval);
   }, []);
 
+  // Determine the theme class based on the current theme
+  const getThemeClass = () => {
+    switch (theme) {
+      case 'light':
+        return 'light-mode';
+      case 'dark':
+        return 'dark-mode';
+      case 'blue':
+        return 'blue-mode';
+      default:
+        return 'light-mode';
+    }
+  };
+
   return (
-    <div className={`layout-container ${darkMode ? "dark-mode" : "light-mode"}`}>
+    <div className={`layout-container ${getThemeClass()}`}>
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
       {/* ✅ TOPBAR with sidebarCollapsed prop */}

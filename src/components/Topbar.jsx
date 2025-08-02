@@ -8,9 +8,61 @@ import '../layouts/MainLayout.css';
 const Topbar = ({ sidebarCollapsed }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
-  const { darkMode } = useContext(ThemeContext);
+  const { theme, darkMode } = useContext(ThemeContext);
 
   const sidebarWidth = sidebarCollapsed ? 80 : 250;
+
+  // Theme-aware colors
+  const getTopbarColors = () => {
+    switch (theme) {
+      case 'light':
+        return {
+          background: "rgba(49, 109, 223, 0.95)",
+          borderColor: "rgba(255, 255, 255, 0.2)",
+          textColor: "#ffffff",
+          searchBg: "rgba(255, 255, 255, 0.2)",
+          searchColor: "#ffffff",
+          iconColor: "rgba(255, 255, 255, 0.7)",
+          placeholderColor: "rgba(255, 255, 255, 0.7)",
+          boxShadow: "0 8px 32px rgba(49, 109, 223, 0.15)"
+        };
+      case 'dark':
+        return {
+          background: "rgba(31, 41, 55, 0.95)",
+          borderColor: "rgba(75, 85, 99, 0.3)",
+          textColor: "#ffffff",
+          searchBg: "rgba(55, 65, 81, 0.8)",
+          searchColor: "#ffffff",
+          iconColor: "#9ca3af",
+          placeholderColor: "#9ca3af",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)"
+        };
+      case 'blue':
+        return {
+          background: "rgba(15, 23, 42, 0.95)",
+          borderColor: "rgba(51, 65, 85, 0.3)",
+          textColor: "#f1f5f9",
+          searchBg: "rgba(30, 41, 59, 0.8)",
+          searchColor: "#f1f5f9",
+          iconColor: "rgba(241, 245, 249, 0.7)",
+          placeholderColor: "rgba(241, 245, 249, 0.7)",
+          boxShadow: "0 8px 32px rgba(15, 23, 42, 0.15)"
+        };
+      default:
+        return {
+          background: "rgba(49, 109, 223, 0.95)",
+          borderColor: "rgba(255, 255, 255, 0.2)",
+          textColor: "#ffffff",
+          searchBg: "rgba(255, 255, 255, 0.2)",
+          searchColor: "#ffffff",
+          iconColor: "rgba(255, 255, 255, 0.7)",
+          placeholderColor: "rgba(255, 255, 255, 0.7)",
+          boxShadow: "0 8px 32px rgba(49, 109, 223, 0.15)"
+        };
+    }
+  };
+
+  const colors = getTopbarColors();
 
   return (
     <header
@@ -25,19 +77,13 @@ const Topbar = ({ sidebarCollapsed }) => {
         justifyContent: "space-between",
         alignItems: "center",
         padding: "0 2rem",
-        background: darkMode 
-          ? "rgba(31, 41, 55, 0.95)" 
-          : "rgba(49, 109, 223, 0.95)",
+        background: colors.background,
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        borderBottom: darkMode 
-          ? "1px solid rgba(75, 85, 99, 0.3)" 
-          : "1px solid rgba(255, 255, 255, 0.2)",
-        color: darkMode ? "#f9fafb" : "#ffffff",
+        borderBottom: `1px solid ${colors.borderColor}`,
+        color: colors.textColor,
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        boxShadow: darkMode
-          ? "0 8px 32px rgba(0, 0, 0, 0.12)"
-          : "0 8px 32px rgba(49, 109, 223, 0.15)",
+        boxShadow: colors.boxShadow,
       }}
     >
       {/* Search Section */}
@@ -52,7 +98,7 @@ const Topbar = ({ sidebarCollapsed }) => {
           position: "absolute",
           left: "16px",
           zIndex: 1,
-          color: darkMode ? "#9ca3af" : "rgba(255, 255, 255, 0.7)",
+          color: colors.iconColor,
           transition: "color 0.2s ease",
           transform: searchFocused ? "scale(1.1)" : "scale(1)",
         }}>
@@ -78,21 +124,14 @@ const Topbar = ({ sidebarCollapsed }) => {
             fontSize: "14px",
             fontWeight: "400",
             outline: "none",
-            background: darkMode 
-              ? "rgba(55, 65, 81, 0.8)" 
-              : "rgba(255, 255, 255, 0.2)",
-            color: darkMode ? "#f9fafb" : "#ffffff",
+            background: colors.searchBg,
+            color: colors.searchColor,
             backdropFilter: "blur(10px)",
             WebkitBackdropFilter: "blur(10px)",
             transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             boxShadow: searchFocused 
-              ? (darkMode 
-                  ? "0 0 0 2px rgba(99, 102, 241, 0.5), 0 8px 25px rgba(0, 0, 0, 0.15)"
-                  : "0 0 0 2px rgba(255, 255, 255, 0.4), 0 8px 25px rgba(0, 0, 0, 0.1)")
+              ? "0 0 0 2px rgba(255, 255, 255, 0.4), 0 8px 25px rgba(0, 0, 0, 0.1)"
               : "0 4px 12px rgba(0, 0, 0, 0.1)",
-            "::placeholder": {
-              color: darkMode ? "#9ca3af" : "rgba(255, 255, 255, 0.7)"
-            }
           }}
         />
 
@@ -101,23 +140,29 @@ const Topbar = ({ sidebarCollapsed }) => {
           <div style={{
             position: "absolute",
             right: "16px",
-            background: darkMode ? "#10b981" : "#22c55e",
-            borderRadius: "50%",
-            width: "8px",
-            height: "8px",
-            animation: "pulse 2s infinite"
-          }} />
+            top: "50%",
+            transform: "translateY(-50%)",
+            background: "rgba(255, 255, 255, 0.2)",
+            color: colors.textColor,
+            padding: "4px 8px",
+            borderRadius: "8px",
+            fontSize: "12px",
+            fontWeight: "500",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+          }}>
+            {Math.floor(Math.random() * 50) + 1} results
+          </div>
         )}
       </div>
 
       {/* Right Section */}
-      <div style={{ 
-        display: "flex", 
-        gap: "16px", 
+      <div style={{
+        display: "flex",
         alignItems: "center",
-        flex: "0 0 auto"
+        gap: "16px",
       }}>
-        {/* Notification Bell */}
+        {/* Notification Button */}
         <button style={{
           background: "none",
           border: "none",
@@ -130,16 +175,10 @@ const Topbar = ({ sidebarCollapsed }) => {
           justifyContent: "center",
           transition: "all 0.2s ease",
           position: "relative",
-          ":hover": {
-            background: darkMode 
-              ? "rgba(55, 65, 81, 0.6)" 
-              : "rgba(255, 255, 255, 0.2)"
-          }
+          fontSize: "20px",
         }}
         onMouseEnter={(e) => {
-          e.target.style.background = darkMode 
-            ? "rgba(55, 65, 81, 0.6)" 
-            : "rgba(255, 255, 255, 0.2)";
+          e.target.style.background = "rgba(255, 255, 255, 0.2)";
           e.target.style.transform = "translateY(-1px)";
         }}
         onMouseLeave={(e) => {
@@ -159,7 +198,7 @@ const Topbar = ({ sidebarCollapsed }) => {
             height: "8px",
             background: "#ef4444",
             borderRadius: "50%",
-            border: `2px solid ${darkMode ? "#1f2937" : "rgb(49, 109, 223)"}`,
+            border: `2px solid ${colors.background}`,
           }} />
         </button>
 
@@ -167,26 +206,24 @@ const Topbar = ({ sidebarCollapsed }) => {
         <div style={{
           width: "1px",
           height: "24px",
-          
+          background: colors.borderColor,
           borderRadius: "0.5px"
         }} />
 
         {/* Dark Mode Toggle */}
         <div style={{
-         
-          // borderRadius: "12px",
-          // padding: "4px",
-          // backdropFilter: "blur(10px)",
-          // WebkitBackdropFilter: "blur(10px)",
+          borderRadius: "12px",
+          padding: "4px",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
         }}>
           <DarkModeToggle />
         </div>
 
         {/* Profile Menu */}
         <div style={{
-        
           borderRadius: "12px",
-          
+          padding: "4px",
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
         }}>
@@ -203,7 +240,7 @@ const Topbar = ({ sidebarCollapsed }) => {
           }
           
           input::placeholder {
-            color: ${darkMode ? "#9ca3af" : "rgba(255, 255, 255, 0.7)"} !important;
+            color: ${colors.placeholderColor} !important;
           }
         `}
       </style>
