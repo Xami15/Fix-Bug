@@ -22,7 +22,7 @@ const MotorTroubleshootingGuide = ({ onClose }) => {
       icon: '✅',
       solutions: [
         'Motor name must be at least 3 characters long',
-        'Motor ID can only contain uppercase letters, numbers, and hyphens',
+        'Motor ID can only contain letters, numbers, and hyphens',
         'Location field cannot be empty',
         'Motor ID must be unique within your company'
       ]

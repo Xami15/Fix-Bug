@@ -1,11 +1,11 @@
 /* src/components/MotorDetailCard.css */
 
 .motor-detail-card {
-    background-color: var(--primary-bg-color); /* Darker background for card content */
+    background: var(--secondary-bg-color); /* Use secondary background for better contrast */
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
-    box-shadow: 0 4px 10px var(--box-shadow-color); /* Visible shadow */
+    box-shadow: var(--card-shadow); /* Use consistent card shadow */
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Distribute content vertically */
@@ -16,18 +16,54 @@
     box-sizing: border-box; /* Ensures padding and border are included in width/height */
     text-align: left;
     overflow: hidden; /* Hide any content that overflows */
+    position: relative; /* For status indicator positioning */
+    backdrop-filter: blur(10px);
 }
 
 .motor-detail-card:hover {
     transform: translateY(-5px); /* Lift on hover */
-    box-shadow: 0 8px 20px var(--box-shadow-color); /* Stronger shadow on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
 }
 
-/* Status-based left border - provides a prominent status indicator */
-.motor-detail-card.status-normal { border-left: 6px solid var(--status-normal); }
-.motor-detail-card.status-warning { border-left: 6px solid var(--status-warning); }
-.motor-detail-card.status-fault { border-left: 6px solid var(--status-fault); }
-.motor-detail-card.status-disconnected { border-left: 6px solid var(--status-disconnected); }
+/* Enhanced Status-based left border - provides a prominent status indicator */
+.motor-detail-card.status-normal { 
+    border-left: 6px solid var(--status-normal);
+    border-left-color: #10b981; /* Bright green for normal */
+}
+.motor-detail-card.status-warning { 
+    border-left: 6px solid var(--status-warning);
+    border-left-color: #f59e0b; /* Bright yellow for warning */
+}
+.motor-detail-card.status-fault { 
+    border-left: 6px solid var(--status-fault);
+    border-left-color: #ef4444; /* Bright red for critical */
+}
+.motor-detail-card.status-disconnected { 
+    border-left: 6px solid var(--status-disconnected);
+    border-left-color: #6b7280; /* Gray for disconnected */
+}
+
+/* Add subtle glow effect for active statuses */
+.motor-detail-card.status-normal {
+    box-shadow: 0 4px 10px var(--box-shadow-color), 0 0 0 1px rgba(16, 185, 129, 0.1);
+}
+.motor-detail-card.status-warning {
+    box-shadow: 0 4px 10px var(--box-shadow-color), 0 0 0 1px rgba(245, 158, 11, 0.1);
+}
+.motor-detail-card.status-fault {
+    box-shadow: 0 4px 10px var(--box-shadow-color), 0 0 0 1px rgba(239, 68, 68, 0.1);
+}
+
+/* Enhanced hover effects for different statuses */
+.motor-detail-card.status-normal:hover {
+    box-shadow: 0 8px 20px var(--box-shadow-color), 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+.motor-detail-card.status-warning:hover {
+    box-shadow: 0 8px 20px var(--box-shadow-color), 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+.motor-detail-card.status-fault:hover {
+    box-shadow: 0 8px 20px var(--box-shadow-color), 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
 
 
 .card-header {
@@ -43,7 +79,7 @@
 .motor-name {
     margin: 0;
     font-size: 1.2rem; /* Larger motor name */
-    color: var(--text-color);
+    color: #3b82f6; /* Always blue regardless of theme */
     font-weight: bold;
     white-space: nowrap; /* Prevent motor name from wrapping */
     overflow: hidden; /* Hide overflow text */
@@ -94,21 +130,46 @@
     color: var(--text-color);
 }
 
-/* Status Dot for the card - prominent and clear */
+/* Enhanced Status Dot for the card - more prominent and clear */
 .status-dot {
-    width: 15px; /* Larger dot */
-    height: 15px; /* Larger dot */
+    width: 16px; /* Slightly larger dot */
+    height: 16px; /* Slightly larger dot */
     border-radius: 50%;
-    margin-right: 10px; /* More spacing */
+    margin-right: 12px; /* More spacing */
     flex-shrink: 0;
-    border: 1px solid rgba(255,255,255,0.4); /* Clearer border for the dot */
+    border: 2px solid rgba(255,255,255,0.3); /* Thicker border for better visibility */
+    box-shadow: 0 0 8px rgba(0,0,0,0.2); /* Subtle shadow for depth */
+    transition: all 0.3s ease;
 }
 
-/* Specific colors for the dots (relying on global CSS variables) */
-.status-dot.normal { background-color: var(--status-normal); }
-.status-dot.warning { background-color: var(--status-warning); }
-.status-dot.fault { background-color: var(--status-fault); }
-.status-dot.disconnected { background-color: var(--status-disconnected); }
+/* Specific colors for the dots with enhanced visibility */
+.status-dot.normal { 
+    background-color: #10b981; /* Bright green */
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+.status-dot.warning { 
+    background-color: #f59e0b; /* Bright yellow */
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+.status-dot.fault { 
+    background-color: #ef4444; /* Bright red */
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+.status-dot.disconnected { 
+    background-color: #6b7280; /* Gray */
+    box-shadow: 0 0 8px rgba(107, 114, 128, 0.4);
+}
+
+/* Pulse animation for critical status */
+.status-dot.fault {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
 
 
 .last-updated {

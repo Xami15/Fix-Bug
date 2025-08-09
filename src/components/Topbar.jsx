@@ -3,6 +3,8 @@ import React, { useState, useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 import DarkModeToggle from './DarkModeToggle';
 import ProfileMenu from './ProfileMenu';
+import SearchDropdown from './SearchDropdown';
+import NotificationDropdown from './NotificationDropdown';
 import '../layouts/MainLayout.css';
 
 const Topbar = ({ sidebarCollapsed }) => {
@@ -72,7 +74,7 @@ const Topbar = ({ sidebarCollapsed }) => {
         left: `${sidebarWidth}px`,
         right: 0,
         height: "70px",
-        zIndex: 1000,
+        zIndex: 1001,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -82,79 +84,17 @@ const Topbar = ({ sidebarCollapsed }) => {
         WebkitBackdropFilter: "blur(20px)",
         borderBottom: `1px solid ${colors.borderColor}`,
         color: colors.textColor,
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition: "left 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         boxShadow: colors.boxShadow,
       }}
     >
       {/* Search Section */}
-      <div style={{ 
-        position: "relative", 
-        display: "flex", 
-        alignItems: "center",
-        flex: "0 0 auto"
-      }}>
-        {/* Search Icon */}
-        <div style={{
-          position: "absolute",
-          left: "16px",
-          zIndex: 1,
-          color: colors.iconColor,
-          transition: "color 0.2s ease",
-          transform: searchFocused ? "scale(1.1)" : "scale(1)",
-        }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="21 21l-4.35-4.35"/>
-          </svg>
-        </div>
-
-        {/* Search Input */}
-        <input
-          type="text"
-          placeholder="Search anything..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => setSearchFocused(true)}
-          onBlur={() => setSearchFocused(false)}
-          style={{
-            padding: "12px 16px 12px 48px",
-            borderRadius: "16px",
-            border: "none",
-            width: searchFocused ? "320px" : "280px",
-            fontSize: "14px",
-            fontWeight: "400",
-            outline: "none",
-            background: colors.searchBg,
-            color: colors.searchColor,
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-            boxShadow: searchFocused 
-              ? "0 0 0 2px rgba(255, 255, 255, 0.4), 0 8px 25px rgba(0, 0, 0, 0.1)"
-              : "0 4px 12px rgba(0, 0, 0, 0.1)",
-          }}
-        />
-
-        {/* Search Results Indicator */}
-        {searchTerm && (
-          <div style={{
-            position: "absolute",
-            right: "16px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            background: "rgba(255, 255, 255, 0.2)",
-            color: colors.textColor,
-            padding: "4px 8px",
-            borderRadius: "8px",
-            fontSize: "12px",
-            fontWeight: "500",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-          }}>
-            {Math.floor(Math.random() * 50) + 1} results
-          </div>
-        )}
-      </div>
+      <SearchDropdown 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchFocused={searchFocused}
+        setSearchFocused={setSearchFocused}
+      />
 
       {/* Right Section */}
       <div style={{
@@ -162,45 +102,8 @@ const Topbar = ({ sidebarCollapsed }) => {
         alignItems: "center",
         gap: "16px",
       }}>
-        {/* Notification Button */}
-        <button style={{
-          background: "none",
-          border: "none",
-          color: "inherit",
-          cursor: "pointer",
-          padding: "8px",
-          borderRadius: "12px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "all 0.2s ease",
-          position: "relative",
-          fontSize: "20px",
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.background = "rgba(255, 255, 255, 0.2)";
-          e.target.style.transform = "translateY(-1px)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = "transparent";
-          e.target.style.transform = "translateY(0)";
-        }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-          {/* Notification dot */}
-          <div style={{
-            position: "absolute",
-            top: "6px",
-            right: "6px",
-            width: "8px",
-            height: "8px",
-            background: "#ef4444",
-            borderRadius: "50%",
-            border: `2px solid ${colors.background}`,
-          }} />
-        </button>
+        {/* Notification Dropdown */}
+        <NotificationDropdown />
 
         {/* Divider */}
         <div style={{

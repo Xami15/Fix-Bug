@@ -1,0 +1,114 @@
+{
+  "test_date": "2025-08-03T03:45:00.697098",
+  "model_performance": {
+    "overall_accuracy": 1.0,
+    "overall_precision": 1.0,
+    "overall_recall": 1.0,
+    "overall_f1_score": 1.0
+  },
+  "class_performance": {
+    "healthy": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "bowed_rotor": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "faulty_bearing": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "broken_rotor_bars": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "rotor_misalignment": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "rotor_unbalanced": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "stator_winding": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      373,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      373,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      373,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      373,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      373,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      185,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      122
+    ]
+  ],
+  "recommendations": [
+    "Excellent model performance - ready for production deployment"
+  ]
+}

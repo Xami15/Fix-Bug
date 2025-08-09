@@ -12,10 +12,10 @@
 .main-content {
   flex: 1;
   padding: 1rem;
-  padding-top: 60px; /* ✅ Space for fixed Topbar */
+  padding-top: 90px; /* Space for fixed Topbar (70px) + extra padding */
   transition: margin-left 0.3s ease;
   overflow-y: auto;
-  margin-left: 240px; /* default sidebar width */
+  margin-left: 250px; /* default sidebar width */
   background-color: var(--secondary-bg-color);
   border-left: 1px solid var(--border-color);
 }

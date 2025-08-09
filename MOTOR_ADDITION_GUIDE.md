@@ -41,9 +41,9 @@ For users who prefer a traditional form approach:
 
 ### Motor ID
 - **Required:** Yes
-- **Format:** Uppercase letters, numbers, and hyphens only
+- **Format:** Letters (any case), numbers, and hyphens only
 - **Must be unique** within your company
-- **Examples:** "MOTOR-001", "PUMP-003", "HVAC-001"
+- **Examples:** "MOTOR-001", "motor-001", "Pump-003", "hvac-001"
 
 ### Location
 - **Required:** Yes

@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import AIChatbot from './AIChatbot';
 
 const navItems = [
   { name: "Dashboard", path: "/dashboard", icon: <Home size={20} /> },
@@ -52,6 +53,11 @@ export default function Sidebar({ collapsed, setCollapsed }) {
           </li>
         ))}
       </ul>
+      
+      {/* AI Chatbot */}
+      <div style={{ marginTop: 'auto', padding: '16px' }}>
+        <AIChatbot />
+      </div>
     </aside>
   );
 }

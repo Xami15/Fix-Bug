@@ -1,0 +1,121 @@
+2025-08-03 02:53:17,739 - __main__ - INFO - Setting up training environment...
+2025-08-03 02:53:17,742 - __main__ - INFO - Current working directory: C:\Users\Nii Amu Ankrah\OneDrive\Documents\Desktop\CNN_Motor\SEP Monitoring Dashboard\backend\ml
+2025-08-03 02:53:17,744 - __main__ - INFO - Training environment setup complete
+2025-08-03 02:53:17,744 - __main__ - INFO - Validating dataset...
+2025-08-03 02:53:17,745 - __main__ - INFO - Found 43 unloaded condition files
+2025-08-03 02:53:17,746 - __main__ - INFO - Found 38 loaded condition files
+2025-08-03 02:53:17,746 - __main__ - INFO - Dataset validation complete
+2025-08-03 02:53:17,746 - __main__ - INFO - ================================================================================
+2025-08-03 02:53:17,747 - __main__ - INFO - STARTING COMPLETE MODEL TRAINING PIPELINE
+2025-08-03 02:53:17,747 - __main__ - INFO - ================================================================================
+2025-08-03 02:53:17,748 - __main__ - INFO - Training started at: 2025-08-03 02:53:17.747990
+2025-08-03 02:53:17,748 - __main__ - INFO - Initializing ModelTrainer...
+2025-08-03 02:53:18,187 - src.cnn_model - INFO - CNN1D model architecture created successfully
+2025-08-03 02:53:18,187 - src.cnn_model - INFO - Model input shape: (1681, 1)
+2025-08-03 02:53:18,187 - src.cnn_model - INFO - Model output classes: 8
+2025-08-03 02:53:18,188 - src.cnn_model - INFO - CNN1D model initialized successfully
+2025-08-03 02:53:18,191 - src.model_trainer - INFO - ModelTrainer initialized successfully
+2025-08-03 02:53:18,192 - src.model_trainer - INFO - Data path: 2_CSV_Data_Files
+2025-08-03 02:53:18,194 - src.model_trainer - INFO - Model save directory: backend/ml/saved_model/
+2025-08-03 02:53:18,194 - __main__ - INFO - Validating training requirements...
+2025-08-03 02:53:18,196 - src.model_trainer - INFO - Training requirements validation passed: 81 CSV files found
+2025-08-03 02:53:18,196 - __main__ - INFO - Executing complete training pipeline...
+2025-08-03 02:53:18,197 - src.model_trainer - INFO - [2025-08-03 02:53:18] Starting complete training pipeline
+2025-08-03 02:53:18,197 - src.model_trainer - INFO - [2025-08-03 02:53:18] Step 1: Loading and preparing data
+2025-08-03 02:53:18,198 - src.model_trainer - INFO - Loading and preparing dataset...
+2025-08-03 02:53:18,770 - src.data_processor - INFO - Loaded bowed_rotor_unloaded_1_0.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:20,157 - src.data_processor - INFO - Loaded bowed_rotor_unloaded_2_0.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:21,645 - src.data_processor - INFO - Loaded bowed_rotor_unloaded_3_0.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:23,099 - src.data_processor - INFO - Loaded bowed_rotor_unloaded_4_0.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:24,065 - src.data_processor - INFO - Loaded bowed_rotor_unloaded_5_0.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:24,846 - src.data_processor - INFO - Loaded bowed_rotor_unloaded_6_0.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:25,995 - src.data_processor - INFO - Loaded bowed_rotor_unloaded_7_0.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:27,321 - src.data_processor - INFO - Loaded bowed_rotor_unloaded_8_0.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:28,434 - src.data_processor - INFO - Loaded broken_rotor_bars_unloaded_2_0.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:53:29,347 - src.data_processor - INFO - Loaded broken_rotor_bars_unloaded_3_0.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:53:30,235 - src.data_processor - INFO - Loaded broken_rotor_bars_unloaded_4_0.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:53:31,061 - src.data_processor - INFO - Loaded broken_rotor_bars_unloaded_5_0.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:53:31,779 - src.data_processor - INFO - Loaded broken_rotor_bars_unloaded_6_0.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:53:32,353 - src.data_processor - INFO - Loaded broken_rotor_bars_unloaded_7_0.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:53:32,879 - src.data_processor - INFO - Loaded broken_rotor_bars_unloaded_8_0.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:53:33,367 - src.data_processor - INFO - Loaded faulty_bearing_unloaded _1_0.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:53:33,826 - src.data_processor - INFO - Loaded faulty_bearing_unloaded _2_0.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:53:34,369 - src.data_processor - INFO - Loaded faulty_bearing_unloaded _3_0.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:53:35,099 - src.data_processor - INFO - Loaded faulty_bearing_unloaded _4_0.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:53:35,820 - src.data_processor - INFO - Loaded faulty_bearing_unloaded _5_0.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:53:36,495 - src.data_processor - INFO - Loaded faulty_bearing_unloaded _6_0.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:53:37,030 - src.data_processor - INFO - Loaded faulty_bearing_unloaded _7_0.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:53:37,693 - src.data_processor - INFO - Loaded faulty_bearing_unloaded _8_0.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:53:38,183 - src.data_processor - INFO - Loaded healthy_unloaded_1_0.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:53:38,883 - src.data_processor - INFO - Loaded healthy_unloaded_2_0.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:53:39,508 - src.data_processor - INFO - Loaded healthy_unloaded_3_0.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:53:40,203 - src.data_processor - INFO - Loaded healthy_unloaded_4_0.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:53:40,741 - src.data_processor - INFO - Loaded healthy_unloaded_5_0.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:53:41,230 - src.data_processor - INFO - Loaded healthy_unloaded_6_0.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:53:41,740 - src.data_processor - INFO - Loaded healthy_unloaded_7_0.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:53:42,373 - src.data_processor - INFO - Loaded healthy_unloaded_8_0.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:53:43,092 - src.data_processor - INFO - Loaded rotor_misalignment_unloaded_1_0.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:53:43,742 - src.data_processor - INFO - Loaded rotor_misalignment_unloaded_2_0.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:53:44,333 - src.data_processor - INFO - Loaded rotor_misalignment_unloaded_3_0.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:53:44,918 - src.data_processor - INFO - Loaded rotor_misalignment_unloaded_4_0.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:53:45,457 - src.data_processor - INFO - Loaded rotor_misalignment_unloaded_6_0.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:53:45,947 - src.data_processor - INFO - Loaded rotor_misalignment_unloaded_8_0.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:53:46,583 - src.data_processor - INFO - Loaded rotor_unbalanced_unloaded_1_0.csv: (420000, 5) samples for category 'rotor_unbalanced'
+2025-08-03 02:53:47,484 - src.data_processor - INFO - Loaded rotor_unbalanced_unloaded_3_0.csv: (420000, 5) samples for category 'rotor_unbalanced'
+2025-08-03 02:53:48,194 - src.data_processor - INFO - Loaded rotor_unbalanced_unloaded_5_0.csv: (420000, 5) samples for category 'rotor_unbalanced'
+2025-08-03 02:53:48,815 - src.data_processor - INFO - Loaded rotor_unbalanced_unloaded_8_0.csv: (420000, 5) samples for category 'rotor_unbalanced'
+2025-08-03 02:53:50,022 - src.data_processor - INFO - Loaded stator_winding_unloaded_1_0.csv: (420000, 5) samples for category 'stator_winding'
+2025-08-03 02:53:51,049 - src.data_processor - INFO - Loaded stator_winding_unloaded_2_0.csv: (420000, 5) samples for category 'stator_winding'
+2025-08-03 02:53:51,810 - src.data_processor - INFO - Loaded bowed_rotor_loaded_1_1.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:52,682 - src.data_processor - INFO - Loaded bowed_rotor_loaded_2_1.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:53,363 - src.data_processor - INFO - Loaded bowed_rotor_loaded_3_1.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:53,983 - src.data_processor - INFO - Loaded bowed_rotor_loaded_4_1.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:55,164 - src.data_processor - INFO - Loaded bowed_rotor_loaded_5_1.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:56,818 - src.data_processor - INFO - Loaded bowed_rotor_loaded_6_1.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:58,200 - src.data_processor - INFO - Loaded bowed_rotor_loaded_7_1.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:53:59,464 - src.data_processor - INFO - Loaded bowed_rotor_loaded_8_1.csv: (420000, 5) samples for category 'bowed_rotor'
+2025-08-03 02:54:00,634 - src.data_processor - INFO - Loaded broken_rotor_bars_loaded_1_1.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:54:01,540 - src.data_processor - INFO - Loaded broken_rotor_bars_loaded_2_1.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:54:02,485 - src.data_processor - INFO - Loaded broken_rotor_bars_loaded_3_1.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:54:03,731 - src.data_processor - INFO - Loaded broken_rotor_bars_loaded_5_1.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:54:04,737 - src.data_processor - INFO - Loaded broken_rotor_bars_loaded_7_1.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:54:05,661 - src.data_processor - INFO - Loaded broken_rotor_bars_loaded_8_1.csv: (420000, 5) samples for category 'broken_rotor_bars'
+2025-08-03 02:54:06,413 - src.data_processor - INFO - Loaded faulty_bearing_loaded _1_1.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:54:07,276 - src.data_processor - INFO - Loaded faulty_bearing_loaded _2_1.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:54:08,199 - src.data_processor - INFO - Loaded faulty_bearing_loaded _3_1.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:54:08,913 - src.data_processor - INFO - Loaded faulty_bearing_loaded _4_1.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:54:09,607 - src.data_processor - INFO - Loaded faulty_bearing_loaded _5_1.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:54:10,499 - src.data_processor - INFO - Loaded faulty_bearing_loaded _6_1.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:54:11,389 - src.data_processor - INFO - Loaded faulty_bearing_loaded _7_1.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:54:12,111 - src.data_processor - INFO - Loaded faulty_bearing_loaded _8_1.csv: (420000, 5) samples for category 'faulty_bearing'
+2025-08-03 02:54:12,810 - src.data_processor - INFO - Loaded healthy_loaded_1_1.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:54:13,428 - src.data_processor - INFO - Loaded healthy_loaded_2_1.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:54:14,555 - src.data_processor - INFO - Loaded healthy_loaded_3_1.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:54:15,993 - src.data_processor - INFO - Loaded healthy_loaded_4_1.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:54:16,824 - src.data_processor - INFO - Loaded healthy_loaded_5_1.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:54:17,611 - src.data_processor - INFO - Loaded healthy_loaded_6_1.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:54:18,514 - src.data_processor - INFO - Loaded healthy_loaded_7_1.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:54:19,455 - src.data_processor - INFO - Loaded healthy_loaded_8_1.csv: (420000, 5) samples for category 'healthy'
+2025-08-03 02:54:20,344 - src.data_processor - INFO - Loaded rotor_misalignment_loaded_1_1.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:54:21,031 - src.data_processor - INFO - Loaded rotor_misalignment_loaded_2_1.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:54:21,712 - src.data_processor - INFO - Loaded rotor_misalignment_loaded_3_1.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:54:22,379 - src.data_processor - INFO - Loaded rotor_misalignment_loaded_4_1.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:54:23,459 - src.data_processor - INFO - Loaded rotor_misalignment_loaded_5_1.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:54:24,371 - src.data_processor - INFO - Loaded rotor_misalignment_loaded_6_1.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:54:25,083 - src.data_processor - INFO - Loaded rotor_misalignment_loaded_7_1.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:54:25,930 - src.data_processor - INFO - Loaded rotor_misalignment_loaded_8_1.csv: (420000, 5) samples for category 'rotor_misalignment'
+2025-08-03 02:54:26,159 - src.data_processor - INFO - Category 'healthy': (6720000, 5) total samples
+2025-08-03 02:54:26,419 - src.data_processor - INFO - Category 'bowed_rotor': (6720000, 5) total samples
+2025-08-03 02:54:26,701 - src.data_processor - INFO - Category 'faulty_bearing': (6720000, 5) total samples
+2025-08-03 02:54:27,005 - src.data_processor - INFO - Category 'broken_rotor_bars': (5460000, 5) total samples
+2025-08-03 02:54:27,307 - src.data_processor - INFO - Category 'rotor_misalignment': (5880000, 5) total samples
+2025-08-03 02:54:27,389 - src.data_processor - INFO - Category 'rotor_unbalanced': (1680000, 5) total samples
+2025-08-03 02:54:27,423 - src.data_processor - INFO - Category 'stator_winding': (840000, 5) total samples
+2025-08-03 02:54:27,424 - src.data_processor - WARNING - No data found for category 'voltage_unbalanced'
+2025-08-03 02:54:28,586 - src.data_processor - INFO - Category 0 (healthy): 33591 samples generated
+2025-08-03 02:54:29,263 - src.data_processor - ERROR - Error in data loading pipeline: Unable to allocate 862. MiB for an array with shape (67182, 1681) and data type float64
+2025-08-03 02:54:29,271 - src.model_trainer - ERROR - Error loading and preparing data: Unable to allocate 862. MiB for an array with shape (67182, 1681) and data type float64
+2025-08-03 02:54:29,272 - src.model_trainer - ERROR - [2025-08-03 02:54:29] Error in training pipeline: Unable to allocate 862. MiB for an array with shape (67182, 1681) and data type float64
+2025-08-03 02:54:29,273 - __main__ - ERROR - Training pipeline failed: Unable to allocate 862. MiB for an array with shape (67182, 1681) and data type float64
+2025-08-03 02:54:29,274 - __main__ - ERROR - Check the logs for detailed error information
+2025-08-03 02:54:30,068 - __main__ - ERROR - Error: Unable to allocate 862. MiB for an array with shape (67182, 1681) and data type float64

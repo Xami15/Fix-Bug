@@ -1,0 +1,57 @@
+{
+  "test_accuracy": 0.9962777495384216,
+  "model_path": "saved_model\\motor_fault_detection_model.h5",
+  "training_date": "2025-08-03T03:30:42.796720",
+  "dataset_info": {
+    "total_samples": 27937,
+    "train_samples": 20952,
+    "test_samples": 6985,
+    "sample_shape": [
+      1681
+    ],
+    "class_names": [
+      "healthy",
+      "bowed_rotor",
+      "faulty_bearing",
+      "broken_rotor_bars",
+      "rotor_misalignment",
+      "rotor_unbalanced",
+      "stator_winding",
+      "voltage_unbalanced"
+    ]
+  },
+  "metrics": {
+    "precision": {
+      "healthy": 1.0,
+      "bowed_rotor": 0.9936305732484076,
+      "faulty_bearing": 0.9984,
+      "broken_rotor_bars": 0.9943729903536977,
+      "rotor_misalignment": 0.9951807228915662,
+      "rotor_unbalanced": 0.9939393939393939,
+      "stator_winding": 1.0
+    },
+    "recall": {
+      "healthy": 1.0,
+      "bowed_rotor": 1.0,
+      "faulty_bearing": 1.0,
+      "broken_rotor_bars": 0.9911858974358975,
+      "rotor_misalignment": 0.9927884615384616,
+      "rotor_unbalanced": 0.9879518072289156,
+      "stator_winding": 1.0
+    },
+    "f1_score": {
+      "healthy": 1.0,
+      "bowed_rotor": 0.9968051118210862,
+      "faulty_bearing": 0.9991993594875901,
+      "broken_rotor_bars": 0.992776886035313,
+      "rotor_misalignment": 0.9939831528279182,
+      "rotor_unbalanced": 0.9909365558912386,
+      "stator_winding": 1.0
+    },
+    "overall_accuracy": 0.9962777495384216,
+    "overall_precision": 0.9962775959521718,
+    "overall_recall": 0.9962777380100215,
+    "overall_f1_score": 0.9962743755946138
+  },
+  "visualization_path": "visualizations"
+}

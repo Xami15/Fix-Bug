@@ -37,27 +37,27 @@
 
 /* Light Mode - Explicit light theme */
 .layout-container.light-mode {
-  --primary-bg-color: #ffffff;
-  --secondary-bg-color: #f2f2f2;
-  --text-color: #000000;
-  --button-text-color: #000000;
-  --secondary-text-color: #444343;
-  --link-color: #007bff;
-   --add-button: #007bff;
+  --primary-bg-color: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --secondary-bg-color: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --text-color: #1e293b;
+  --button-text-color: #ffffff;
+  --secondary-text-color: #475569;
+  --link-color: #3b82f6;
+  --add-button: #3b82f6;
   --sidebar-bg-color: #e8e8e8;
   --sidebar-text-color: #333333;
-  --border-color: #b0b0b0;
-  --input-bg-color: #fbfbfb;
-  --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  --border-color: #cbd5e1;
+  --input-bg-color: #ffffff;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
-  --button-bg-color: hsl(214, 84%, 52%);
-  --button-text-color: #000000;
-  --button-border-color: #61dafb;
-  --button-hover-bg-color: #168fb4;
+  --button-bg-color: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --button-text-color: #ffffff;
+  --button-border-color: #3b82f6;
+  --button-hover-bg-color: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
 
-  --accent-button-bg-color: #4fd7fd;
-  --accent-button-text-color: #202633;
-  --accent-button-hover-bg-color: #037fa5;
+  --accent-button-bg-color: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --accent-button-text-color: #ffffff;
+  --accent-button-hover-bg-color: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 
 /* Dark Mode Overrides */
@@ -116,9 +116,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
 
-  background-color: var(--primary-bg-color);
+  background: var(--primary-bg-color);
   color: var(--text-color);
 }
 
@@ -131,46 +131,65 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card {
-  background-color: var(--secondary-bg-color);
+  background: var(--secondary-bg-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
   box-shadow: var(--card-shadow);
   padding: 1rem;
   border-radius: 8px;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 button {
-  background-color: var(--button-bg-color);
+  background: var(--button-bg-color);
   color: var(--button-text-color);
   border: 1px solid var(--button-border-color);
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
-  background-color: var(--button-hover-bg-color);
+  background: var(--button-hover-bg-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .accent-button {
-  background-color: var(--accent-button-bg-color);
+  background: var(--accent-button-bg-color);
   color: var(--accent-button-text-color);
   border: 1px solid var(--accent-button-bg-color);
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .accent-button:hover {
-  background-color: var(--accent-button-hover-bg-color);
+  background: var(--accent-button-hover-bg-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 input[type="text"],
 input[type="email"],
 textarea {
-  background-color: var(--input-bg-color);
+  background: var(--input-bg-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  padding: 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  padding: 0.75rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--link-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }

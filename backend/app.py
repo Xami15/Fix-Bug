@@ -4,6 +4,8 @@ from firebase_admin import auth as firebase_auth
 from sqlalchemy.orm import Session
 from database.models import User
 from database.db_utils import SessionLocal
+from api.ai_predict import ai_predict_router
+from api.notification_routes import router as notification_router
 
 app = FastAPI()
 
@@ -28,6 +30,12 @@ def get_db():
 from database.models import Base
 from database.db_utils import engine
 Base.metadata.create_all(bind=engine)
+
+# ✅ Include AI prediction router
+app.include_router(ai_predict_router)
+
+# ✅ Include notification router
+app.include_router(notification_router)
 
 @app.post("/register-user/")
 async def register_user(request: Request, company_name: str, db: Session = Depends(get_db)):

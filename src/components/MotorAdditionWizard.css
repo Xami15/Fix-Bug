@@ -14,15 +14,18 @@
 }
 
 .motor-wizard-modal {
-  background-color: var(--secondary-bg-color);
+  background-color: var(--card-bg-color, #ffffff);
   border-radius: 16px;
   padding: 2rem;
   max-width: 500px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
   animation: slideIn 0.3s ease-out;
+  border: 2px solid var(--border-color, rgba(0, 0, 0, 0.2));
+  backdrop-filter: blur(10px);
+  background-color: var(--card-bg-color, rgba(255, 255, 255, 0.95));
 }
 
 @keyframes slideIn {
@@ -42,19 +45,20 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
 }
 
 .motor-wizard-header h2 {
   margin: 0;
-  color: var(--text-color);
+  color: var(--text-color, #1f2937);
   font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .wizard-close-button {
   background: none;
   border: none;
-  color: var(--text-color);
+  color: var(--text-secondary, #6b7280);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -63,7 +67,8 @@
 }
 
 .wizard-close-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--hover-bg-color, #f3f4f6);
+  color: var(--text-color, #374151);
 }
 
 .motor-wizard-progress {
@@ -80,7 +85,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background-color: var(--border-color);
+  background-color: var(--border-color, #e5e7eb);
   z-index: 1;
 }
 
@@ -96,37 +101,42 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--border-color);
-  color: var(--text-color);
+  background-color: var(--secondary-bg-color, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   margin-bottom: 0.5rem;
   transition: all 0.3s ease;
+  border: 2px solid var(--border-color, #e5e7eb);
 }
 
 .progress-step.active .progress-number {
-  background-color: var(--button-bg-color);
+  background-color: #3b82f6;
   color: white;
+  border-color: #3b82f6;
 }
 
 .progress-step.completed .progress-number {
-  background-color: var(--accent-color);
+  background-color: #10b981;
   color: white;
+  border-color: #10b981;
 }
 
 .progress-label {
   font-size: 0.875rem;
-  color: var(--text-color);
+  color: var(--text-secondary, #6b7280);
   text-align: center;
   opacity: 0.7;
+  font-weight: 500;
 }
 
 .progress-step.active .progress-label,
 .progress-step.completed .progress-label {
   opacity: 1;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--text-color, #374151);
 }
 
 .motor-wizard-content {
@@ -135,15 +145,17 @@
 
 .motor-wizard-content h3 {
   margin: 0 0 0.5rem 0;
-  color: var(--text-color);
+  color: var(--text-color, #1f2937);
   font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .step-description {
-  color: var(--text-color);
-  opacity: 0.8;
+  color: var(--text-secondary, #6b7280);
+  opacity: 0.9;
   margin-bottom: 1.5rem;
   line-height: 1.5;
+  font-weight: 500;
 }
 
 .wizard-input-group {
@@ -155,33 +167,38 @@
 .wizard-input {
   padding: 1rem;
   border-radius: 8px;
-  border: 2px solid var(--border-color);
-  background-color: var(--primary-bg-color);
-  color: var(--text-color);
+  border: 2px solid var(--border-color, #e5e7eb);
+  background-color: var(--input-bg-color, #ffffff);
+  color: var(--text-color, #1f2937);
   font-size: 1rem;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+  font-weight: 500;
 }
 
 .wizard-input:focus {
-  border-color: var(--button-bg-color);
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .wizard-input.error {
-  border-color: var(--danger-color);
-  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.3);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.wizard-input::placeholder {
+  color: var(--text-secondary, #9ca3af);
 }
 
 .wizard-error-message {
-  color: var(--danger-color);
+  color: #ef4444;
   font-size: 0.875rem;
   font-weight: 500;
 }
 
 .motor-wizard-actions {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   justify-content: flex-end;
 }
 
@@ -196,24 +213,25 @@
 }
 
 .wizard-button.primary {
-  background-color: var(--button-bg-color);
+  background-color: #3b82f6;
   color: white;
 }
 
 .wizard-button.primary:hover {
-  filter: brightness(1.1);
+  background-color: #2563eb;
   transform: translateY(-1px);
 }
 
 .wizard-button.secondary {
   background-color: transparent;
-  color: var(--text-color);
-  border: 2px solid var(--border-color);
+  color: var(--text-secondary, #6b7280);
+  border: 2px solid var(--border-color, #d1d5db);
 }
 
 .wizard-button.secondary:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: var(--text-color);
+  background-color: var(--hover-bg-color, #f9fafb);
+  border-color: var(--border-color, #9ca3af);
+  color: var(--text-color, #374151);
 }
 
 /* Responsive Design */

@@ -23,7 +23,7 @@ const MotorAdditionWizard = ({ onAddMotor, onClose, userId }) => {
       title: 'Motor ID',
       description: 'Enter a unique identifier for your motor',
       field: 'id',
-      placeholder: 'e.g., MOTOR-001, PUMP-003, HVAC-001'
+      placeholder: 'e.g., MOTOR-001, motor-001, Pump-003'
     },
     {
       id: 3,
@@ -48,8 +48,8 @@ const MotorAdditionWizard = ({ onAddMotor, onClose, userId }) => {
       case 2:
         if (!formData.id.trim()) {
           newErrors.id = 'Motor ID is required';
-        } else if (!/^[A-Z0-9-]+$/.test(formData.id.trim())) {
-          newErrors.id = 'Motor ID can only contain uppercase letters, numbers, and hyphens';
+        } else if (!/^[A-Za-z0-9-]+$/.test(formData.id.trim())) {
+          newErrors.id = 'Motor ID can only contain letters, numbers, and hyphens';
         }
         break;
       case 3:

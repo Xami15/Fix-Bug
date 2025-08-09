@@ -1,171 +1,28 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getAuth } from 'firebase/auth';
 import { useMotors } from '../context/MotorsContext';
 import MotorDetailCard from '../components/MotorDetailCard';
 import MotorAdditionWizard from '../components/MotorAdditionWizard';
 import MotorTroubleshootingGuide from '../components/MotorTroubleshootingGuide';
+import InductionMotorGuide from '../components/InductionMotorGuide';
 import './Dashboard.css';
 import { supabase } from '../utils/supabase';
 import { auth as firebaseAuthInstance } from '../firebaseConfig';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
-import * as THREE from 'three';
 
-// A single component for the 3D motor, making the scene cleaner.
-function MotorModel({ isRotating }) {
-  const motorRef = useRef();
-
-  // Create a clean, industrial look with materials
-  const metalMaterial = new THREE.MeshStandardMaterial({
-    color: '#b0b0b0',
-    metalness: 0.9,
-    roughness: 0.3,
-  });
-
-  const bodyMaterial = new THREE.MeshStandardMaterial({
-    color: '#2a3b4c',
-    metalness: 0.6,
-    roughness: 0.5,
-  });
-  
-  const terminalBoxMaterial = new THREE.MeshStandardMaterial({
-    color: '#4f5e6a',
-    metalness: 0.8,
-    roughness: 0.4,
-  });
-
-  const wireMaterial = new THREE.MeshStandardMaterial({
-    color: '#e74c3c',
-    metalness: 0.1,
-    roughness: 0.9,
-  });
-
-  useFrame((state, delta) => {
-    if (motorRef.current && isRotating) {
-      motorRef.current.rotation.y += delta * 2;
-    }
-  });
-
-  return (
-    <group ref={motorRef} position={[0, 0, 0]}>
-      {/* Main Motor Casing */}
-      <mesh material={bodyMaterial}>
-        <cylinderGeometry args={[1, 1, 2, 64]} />
-      </mesh>
-
-      {/* Front End Cap - A more detailed geometry with a flange */}
-      <mesh material={metalMaterial} position={[0, 0, 1.05]}>
-        <cylinderGeometry args={[1.1, 1.1, 0.1, 64]} />
-      </mesh>
-      <mesh material={metalMaterial} position={[0, 0, 1.1]}>
-        <cylinderGeometry args={[0.9, 0.9, 0.1, 64]} />
-      </mesh>
-      
-      {/* Rear End Cap with Ventilation Holes */}
-      <mesh material={metalMaterial} position={[0, 0, -1.05]}>
-        <cylinderGeometry args={[1.1, 1.1, 0.1, 64]} />
-      </mesh>
-      <mesh material={metalMaterial} position={[0, 0, -1.1]}>
-        <cylinderGeometry args={[0.9, 0.9, 0.1, 64]} />
-      </mesh>
-      {[...Array(12)].map((_, i) => {
-        const angle = (i / 12) * Math.PI * 2;
-        const x = Math.cos(angle) * 0.95;
-        const y = Math.sin(angle) * 0.95;
-        return (
-          <mesh key={`vent-${i}`} position={[x, y, -1.1]}>
-            <cylinderGeometry args={[0.05, 0.05, 0.1, 8]} />
-            <meshStandardMaterial color="#1a202c" />
-          </mesh>
-        );
-      })}
-
-      {/* Motor Shaft */}
-      <mesh material={metalMaterial} position={[0, 0, 1.3]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.2, 0.2, 0.4, 32]} />
-      </mesh>
-
-      {/* Terminal Box - More defined shape */}
-      <mesh material={terminalBoxMaterial} position={[0.8, 0.5, 0]}>
-        <boxGeometry args={[0.6, 0.8, 0.6]} />
-      </mesh>
-      <mesh material={terminalBoxMaterial} position={[1.1, 0.5, 0]}>
-        <boxGeometry args={[0.1, 0.7, 0.5]} />
-      </mesh>
-      <mesh material={terminalBoxMaterial} position={[1.2, 0.5, 0]}>
-        <boxGeometry args={[0.05, 0.6, 0.4]} />
-      </mesh>
-
-      {/* Wires from Terminal Box */}
-      <mesh material={wireMaterial} position={[1.4, 0.7, 0]}>
-        <boxGeometry args={[0.2, 0.05, 0.05]} />
-      </mesh>
-      <mesh material={wireMaterial} position={[1.4, 0.5, 0]}>
-        <boxGeometry args={[0.2, 0.05, 0.05]} />
-      </mesh>
-      <mesh material={wireMaterial} position={[1.4, 0.3, 0]}>
-        <boxGeometry args={[0.2, 0.05, 0.05]} />
-      </mesh>
-    </group>
-  );
-}
-
-// Separate component for the entire 3D scene
-function IndustrialScene({ isRotating }) {
-  return (
-    <>
-      {/* High-quality lighting and environment for a professional look */}
-      <ambientLight intensity={0.3} />
-      <directionalLight position={[5, 10, 7.5]} intensity={1.5} castShadow />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} />
-      <spotLight
-        position={[0, 5, 5]}
-        angle={0.3}
-        penumbra={1}
-        intensity={2}
-        castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-      />
-
-      {/* A simple plane as the ground for shadows */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]} receiveShadow>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial color="#4f5e6a" />
-      </mesh>
-
-      {/* The actual motor model */}
-      <MotorModel isRotating={isRotating} />
-      
-      {/* CORRECTED: Use a valid preset like "warehouse" */}
-      <Environment preset="warehouse" />
-
-      <OrbitControls
-        enableZoom={true}
-        enablePan={true}
-        minDistance={3}
-        maxDistance={15}
-        target={[0, 0, 0]}
-      />
-      <PerspectiveCamera makeDefault position={[0, 2, 5]} fov={50} />
-    </>
-  );
-}
-
-// The main Dashboard component remains mostly the same, but with cleaner JSX for the 3D modal
 export default function Dashboard() {
-  const { motors, addMotor, removeMotor } = useMotors();
-  const [newMotorNameInput, setNewMotorNameInput] = useState('');
-  const [newMotorLocation, setNewMotorLocation] = useState('');
-  const [newMotorIdInput, setNewMotorIdInput] = useState('');
+  const { motors, removeMotor, addMotor, publishTestData } = useMotors();
   const [showAddMotorForm, setShowAddMotorForm] = useState(false);
-  const [userId, setUserId] = useState(null);
-  const [selectedMotor, setSelectedMotor] = useState(null);
-  const [isMotorRotating, setIsMotorRotating] = useState(false);
-  const [isAddingMotor, setIsAddingMotor] = useState(false);
-  const [formErrors, setFormErrors] = useState({});
   const [showWizard, setShowWizard] = useState(false);
   const [showTroubleshooting, setShowTroubleshooting] = useState(false);
+  const [showMotorGuide, setShowMotorGuide] = useState(false);
+  
+  // Form states
+  const [newMotorNameInput, setNewMotorNameInput] = useState('');
+  const [newMotorIdInput, setNewMotorIdInput] = useState('');
+  const [newMotorLocation, setNewMotorLocation] = useState('');
+  const [isAddingMotor, setIsAddingMotor] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const auth = getAuth();
@@ -214,8 +71,8 @@ export default function Dashboard() {
     
     if (!newMotorIdInput.trim()) {
       errors.id = 'Motor ID is required';
-    } else if (!/^[A-Z0-9-]+$/.test(newMotorIdInput.trim())) {
-      errors.id = 'Motor ID can only contain uppercase letters, numbers, and hyphens';
+    } else if (!/^[A-Za-z0-9-]+$/.test(newMotorIdInput.trim())) {
+      errors.id = 'Motor ID can only contain letters, numbers, and hyphens';
     }
     
     if (!newMotorLocation.trim()) {
@@ -232,6 +89,7 @@ export default function Dashboard() {
 
   const fetchMotors = async (uid) => {
     console.log(`DEBUG: fetchMotors called for UID: "${uid}"`);
+    
     const { data, error } = await supabase
       .from('motors')
       .select('motor_id, company_id, location, motor_name, installed_at, status')
@@ -281,6 +139,8 @@ export default function Dashboard() {
   };
 
   const addMotorToDatabase = async (motorId, motorName, location, currentCompanyId) => {
+    console.log('DEBUG: addMotorToDatabase called with:', { motorId, motorName, location, currentCompanyId });
+    
     // Check for existing motor ID
     const { data: existingMotors, error: fetchError } = await supabase
       .from('motors')
@@ -352,28 +212,6 @@ export default function Dashboard() {
     }
   };
 
-  const handleSelectMotor = (motor) => {
-    setSelectedMotor(motor);
-    // Set rotation based on the motor's actual status
-    setIsMotorRotating(motor.status === "Running"); 
-  };
-
-  const handleCloseAnimation = () => {
-    setIsMotorRotating(false);
-    setTimeout(() => {
-      setSelectedMotor(null);
-    }, 300);
-  };
-  
-  const toggleMotorStatus = () => {
-    // This is a client-side only toggle for demonstration.
-    // In a real application, you would update the database and then re-fetch.
-    const newStatus = isMotorRotating ? "Stopped" : "Running";
-    setIsMotorRotating(!isMotorRotating);
-    // You would update the motor in your global state and database here.
-    console.log(`Motor ${selectedMotor.id} status changed to ${newStatus}`);
-  };
-
   const motorsForDisplay = motors.map((motor) => ({
     ...motor,
     displayLastUpdated: motor.lastUpdated instanceof Date
@@ -405,6 +243,13 @@ export default function Dashboard() {
             >
               <span>❓</span> Need Help?
             </button>
+            <button
+              onClick={() => setShowMotorGuide(true)}
+              className="dashboard-add-button"
+              style={{ backgroundColor: '#10b981' }}
+            >
+              <span>⚡</span> Motor Guide
+            </button>
           </div>
         </div>
         {showAddMotorForm && (
@@ -424,7 +269,7 @@ export default function Dashboard() {
             <div className="form-field-group">
               <input
                 type="text"
-                placeholder="Unique Motor ID (e.g., MOTOR-001 - must match hardware label)"
+                placeholder="Unique Motor ID (e.g., MOTOR-001, motor-001, Pump-003)"
                 value={newMotorIdInput}
                 onChange={(e) => setNewMotorIdInput(e.target.value)}
                 className={`dashboard-input ${formErrors.id ? 'error' : ''}`}
@@ -456,41 +301,6 @@ export default function Dashboard() {
             </button>
           </form>
         )}
-        {selectedMotor && (
-          <div className="motor-animation-modal">
-            <div className="motor-animation-header">
-              <h2>{selectedMotor.name} - 3D Visualization</h2>
-              <button
-                className="close-animation-button"
-                onClick={handleCloseAnimation}
-              >
-                ×
-              </button>
-            </div>
-            <div className="motor-animation-content">
-              <Canvas className="motor-canvas" shadows>
-                <Suspense fallback={null}>
-                  <IndustrialScene isRotating={isMotorRotating} />
-                </Suspense>
-              </Canvas>
-              <div className="motor-info-panel">
-                <h3>Motor Details</h3>
-                <p><strong>ID:</strong> {selectedMotor.id}</p>
-                <p><strong>Name:</strong> {selectedMotor.name}</p>
-                <p><strong>Location:</strong> {selectedMotor.location}</p>
-                <p><strong>Status:</strong> <span className={isMotorRotating ? "status-running" : "status-stopped"}>{isMotorRotating ? "Running" : "Stopped"}</span></p>
-                <div className="control-buttons">
-                  <button
-                    className={isMotorRotating ? "control-button stop" : "control-button start"}
-                    onClick={toggleMotorStatus}
-                  >
-                    {isMotorRotating ? "Stop Motor" : "Start Motor"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
         <h2 className="section-title">All Motors Overview</h2>
         <div className="dashboard-grid">
           {motors.length === 0 ? (
@@ -501,7 +311,6 @@ export default function Dashboard() {
             motorsForDisplay.map((motor) => (
               <div
                 key={motor.id}
-                onClick={() => handleSelectMotor(motor)}
                 className="motor-card-wrapper"
               >
                 <MotorDetailCard
@@ -525,6 +334,12 @@ export default function Dashboard() {
       {showTroubleshooting && (
         <MotorTroubleshootingGuide
           onClose={() => setShowTroubleshooting(false)}
+        />
+      )}
+      
+      {showMotorGuide && (
+        <InductionMotorGuide
+          onClose={() => setShowMotorGuide(false)}
         />
       )}
     </div>

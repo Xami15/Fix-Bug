@@ -1,187 +1,178 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Signup from "./Signup";
+import "./LoginSignup.css";
 
 export default function LoginSignup() {
   const [isActive, setIsActive] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
+
+  // Background slides with images and videos
+  // TODO: Replace these with your professional background images/videos
+  // Add your images to the public/ folder and update the src paths below
+  const backgroundSlides = [
+    {
+      type: 'video',
+      src: '/engine-animation.mp4',
+      fallback: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    },
+    {
+      type: 'video',
+      src: '/videos/induction-motor-operation.mp4.mp4',
+      fallback: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    },
+    {
+      type: 'image',
+      src: '/background.jpg',
+      fallback: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+    },
+    {
+      type: 'gradient',
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    },
+    {
+      type: 'gradient',
+      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    }
+    // Add your professional images here:
+    // {
+    //   type: 'image',
+    //   src: '/your-professional-image-1.jpg',
+    //   fallback: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    // },
+    // {
+    //   type: 'image',
+    //   src: '/your-professional-image-2.jpg',
+    //   fallback: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    // },
+    // {
+    //   type: 'video',
+    //   src: '/your-professional-video.mp4',
+    //   fallback: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+    // }
+  ];
+
+  // Auto-slide background every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % backgroundSlides.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [backgroundSlides.length]);
 
   const handleLogin = () => {
     navigate("/dashboard");
   };
 
-  const containerStyle = {
-    position: "relative",
-    width: "768px",
-    maxWidth: "100%",
-    minHeight: "480px",
-    overflow: "hidden",
-    borderRadius: "10px",
-    // This is the updated line to make the background transparent
-    background: "transparent",
-    boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)",
-    transition: "all 0.4s ease",
-    zIndex: 2,
-  };
-
-  const buttonStyle = {
-    marginTop: "20px",
-    padding: "12px 36px",
-    fontSize: "16px",
-    backgroundColor: "#ffffff",
-    color: "#002147",
-    border: "1px solid #fff",
-    borderRadius: "20px",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  };
-
-  const buttonHoverStyle = {
-    ...buttonStyle,
-    backgroundColor: "#e6e6e6",
+  const renderBackgroundSlide = (slide, index) => {
+    const isActive = index === currentSlide;
+    
+    if (slide.type === 'video') {
+      return (
+        <div
+          key={index}
+          className={`background-slide ${isActive ? 'active' : ''}`}
+          style={{
+            background: slide.fallback
+          }}
+        >
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: isActive ? 1 : 0,
+              transition: 'opacity 1s ease-in-out'
+            }}
+            onError={(e) => {
+              console.error("Video loading error:", e);
+              e.target.style.display = 'none';
+            }}
+          >
+            <source src={slide.src} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      );
+    } else if (slide.type === 'image') {
+      return (
+        <div
+          key={index}
+          className={`background-slide ${isActive ? 'active' : ''}`}
+          style={{
+            background: `url(${slide.src}) center/cover no-repeat`,
+            backgroundFallback: slide.fallback
+          }}
+        />
+      );
+    } else if (slide.type === 'gradient') {
+      return (
+        <div
+          key={index}
+          className={`background-slide ${isActive ? 'active' : ''}`}
+          style={{
+            background: slide.gradient
+          }}
+        />
+      );
+    }
   };
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
-      }}
-    >
-      {/* Animated Engine Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: 0,
-        }}
-        onError={(e) => {
-          console.error("Video loading error:", e);
-          // Fallback to background image if video fails
-          e.target.style.display = "none";
-        }}
-      >
-        <source src="/engine-animation.mp4" type="video/mp4" />
-        <source src="engine-animation.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      
-      {/* Fallback background image */}
-      <div
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          zIndex: -1,
-        }}
-      />
+    <div className="modern-login-signup-container">
+      {/* Background Slides */}
+      <div className="background-carousel">
+        {backgroundSlides.map((slide, index) => renderBackgroundSlide(slide, index))}
+      </div>
 
       {/* Dark overlay */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          height: "100%",
-          width: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          zIndex: 1,
-        }}
-      ></div>
+      <div className="auth-overlay" />
+
+      {/* Slide indicators */}
+      <div className="slide-indicators">
+        {backgroundSlides.map((_, index) => (
+          <button
+            key={index}
+            className={`indicator ${index === currentSlide ? 'active' : ''}`}
+            onClick={() => setCurrentSlide(index)}
+          />
+        ))}
+      </div>
 
       {/* Main Auth container */}
-      <div style={containerStyle} className={isActive ? "activate" : ""}>
+      <div className={`auth-container ${isActive ? "activate" : ""}`}>
         <Signup onLogin={handleLogin} isActive={isActive} />
         <Login onLogin={handleLogin} isActive={isActive} />
 
         {/* Overlay panel */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: "50%",
-            width: "50%",
-            height: "100%",
-            overflow: "hidden",
-            transition: "transform 0.6s ease-in-out",
-            zIndex: 100,
-            transform: isActive ? "translateX(-100%)" : "none",
-          }}
-        >
-          <div
-            style={{
-              background: "linear-gradient(to right, #002147, #001f4d)",
-              color: "#ffffff",
-              position: "relative",
-              left: "-100%",
-              width: "200%",
-              height: "100%",
-              transform: isActive ? "translateX(50%)" : "translateX(0)",
-              transition: "transform 0.6s ease-in-out",
-              display: "flex",
-            }}
-          >
+        <div className="overlay-panel">
+          <div className={`overlay-content ${isActive ? 'active' : ''}`}>
             {/* Left Panel */}
-            <div
-              style={{
-                width: "50%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "0 30px",
-                textAlign: "center",
-                transform: isActive ? "translateX(0)" : "translateX(-200%)",
-                transition: "transform 0.6s ease-in-out",
-              }}
-            >
-              <h1 style={{ color: "white" }}>Welcome Back!</h1>
-              <p style={{ color: "white" }}>To keep connected with us please login</p>
+            <div className="overlay-panel-left">
+              <h1>Welcome Back!</h1>
+              <p>To keep connected with us please login</p>
               <button
-                style={buttonStyle}
+                className="overlay-button"
                 onClick={() => setIsActive(false)}
-                onMouseOver={(e) => Object.assign(e.target.style, buttonHoverStyle)}
-                onMouseOut={(e) => Object.assign(e.target.style, buttonStyle)}
               >
                 Sign In
               </button>
             </div>
 
             {/* Right Panel */}
-            <div
-              style={{
-                width: "50%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "0 30px",
-                textAlign: "center",
-                transform: isActive ? "translateX(200%)" : "translateX(0)",
-                transition: "transform 0.6s ease-in-out",
-              }}
-            >
-              <h1 style={{ color: "white" }}>Hello, Friend!</h1>
-              <p style={{ color: "white" }}>Enter your details and start your journey with us</p>
+            <div className="overlay-panel-right">
+              <h1>Hello, Friend!</h1>
+              <p>Enter your details and start your journey with us</p>
               <button
-                style={buttonStyle}
+                className="overlay-button"
                 onClick={() => setIsActive(true)}
-                onMouseOver={(e) => Object.assign(e.target.style, buttonHoverStyle)}
-                onMouseOut={(e) => Object.assign(e.target.style, buttonStyle)}
               >
                 Sign Up
               </button>
